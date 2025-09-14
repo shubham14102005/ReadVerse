@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "202620355081",
+    "project_id": "readverse-9da4a",
+    "storage_bucket": "readverse-9da4a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202620355081:android:658c9e49aace3150092ed8",
+        "android_client_info": {
+          "package_name": "com.example.readverse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAbI1fyyf8Q7BDnhtMXiRzQQptYIGG1UI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
