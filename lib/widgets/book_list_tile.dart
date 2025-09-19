@@ -4,13 +4,15 @@ import '../models/book.dart';
 class BookListTile extends StatelessWidget {
   final Book book;
   final VoidCallback onTap;
-  final VoidCallback onDelete;
+  final VoidCallback? onFavorite;
+  final VoidCallback? onMarkCompleted;
 
   const BookListTile({
     super.key,
     required this.book,
     required this.onTap,
-    required this.onDelete,
+    this.onFavorite,
+    this.onMarkCompleted,
   });
 
   @override
@@ -100,22 +102,55 @@ class BookListTile extends StatelessWidget {
             ],
           ],
         ),
-        trailing: PopupMenuButton<String>(
-          onSelected: (value) {
-            if (value == 'delete') {
-              onDelete();
-            }
-          },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'delete',
-              child: Row(
-                children: [
-                  Icon(Icons.delete, color: Colors.red),
-                  SizedBox(width: 8),
-                  Text('Delete'),
-                ],
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Favorite Button
+            IconButton(
+              onPressed: onFavorite,
+              icon: Icon(
+                book.isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: book.isFavorite ? Colors.red : Colors.grey,
               ),
+              tooltip: book.isFavorite ? 'Remove from favorites' : 'Add to favorites',
+            ),
+            // More Options
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'favorite') {
+                  onFavorite?.call();
+                } else if (value == 'completed') {
+                  onMarkCompleted?.call();
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'favorite',
+                  child: Row(
+                    children: [
+                      Icon(
+                        book.isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(book.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'completed',
+                  child: Row(
+                    children: [
+                      Icon(
+                        book.progress >= 1.0 ? Icons.check_circle : Icons.check_circle_outline,
+                        color: book.progress >= 1.0 ? Colors.green : Colors.grey,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(book.progress >= 1.0 ? 'Mark as Incomplete' : 'Mark as Completed'),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

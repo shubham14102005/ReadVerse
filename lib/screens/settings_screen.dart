@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/theme_provider.dart';
+import '../providers/user_profile_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -89,12 +90,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // Reading Section
           _buildSectionHeader('Reading'),
-          _buildListTile(
-            'Reading Goals',
-            'Set your reading targets',
-            Icons.flag,
-            '12 books this year',
-            () => _showReadingGoalsDialog(),
+          Consumer<UserProfileProvider>(
+            builder: (context, profileProvider, child) {
+              final goal = profileProvider.userProfile?.readingGoal ?? 12;
+              return _buildListTile(
+                'Reading Goals',
+                'Set your reading targets',
+                Icons.flag,
+                '$goal books this year',
+                () => _showReadingGoalsDialog(profileProvider),
+              );
+            },
           ),
 
           const Divider(),
@@ -215,7 +221,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         secondary: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            color: Theme.of(context).primaryColor.withOpacity(0.1), // Used withOpacity for clarity
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
@@ -226,7 +232,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         value: value,
         onChanged: onChanged,
-        activeThumbColor: Theme.of(context).primaryColor,
+
+        // -- FIX IS HERE --
+        // Use thumbColor to set the thumb's color based on its state
+        thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            // Color when the switch is ON
+            return Theme.of(context).primaryColor;
+          }
+          // Color when the switch is OFF (or use null for default)
+          return Colors.white;
+        }),
       ),
     );
   }
@@ -400,8 +416,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showReadingGoalsDialog() {
-    final TextEditingController goalController = TextEditingController();
+  void _showReadingGoalsDialog(UserProfileProvider profileProvider) {
+    final TextEditingController goalController = TextEditingController(
+      text: (profileProvider.userProfile?.readingGoal ?? 12).toString(),
+    );
 
     showDialog(
       context: context,
@@ -425,20 +443,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.grey[700],
+            ),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (goalController.text.isNotEmpty) {
-                setState(() {
-                  // Store the goal (in a real app, this would be saved to storage)
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(
-                          'Goal set: ${goalController.text} books this year')),
-                );
-                Navigator.of(context).pop();
+                final goal = int.tryParse(goalController.text) ?? 12;
+                await profileProvider.updateProfile(readingGoal: goal);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('Goal set: $goal books this year')),
+                  );
+                  Navigator.of(context).pop();
+                }
               }
             },
             child: const Text('Set Goal'),
@@ -466,24 +487,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 subtitle: const Text('Allow app to collect usage data'),
                 value: dataCollection,
                 onChanged: (value) => setState(() => dataCollection = value),
+                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return Theme.of(context).primaryColor;
+                  }
+                  return Colors.white;
+                }),
               ),
               SwitchListTile(
                 title: const Text('Analytics'),
                 subtitle: const Text('Help improve the app with analytics'),
                 value: analytics,
                 onChanged: (value) => setState(() => analytics = value),
+                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return Theme.of(context).primaryColor;
+                  }
+                  return Colors.white;
+                }),
               ),
               SwitchListTile(
                 title: const Text('Crash Reports'),
                 subtitle: const Text('Send crash reports to help fix bugs'),
                 value: crashReports,
                 onChanged: (value) => setState(() => crashReports = value),
+                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return Theme.of(context).primaryColor;
+                  }
+                  return Colors.white;
+                }),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey[700],
+              ),
               child: const Text('Cancel'),
             ),
             ElevatedButton(
@@ -602,6 +644,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.grey[700],
+            ),
             child: const Text('Cancel'),
           ),
           TextButton(
@@ -612,6 +657,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Navigator.of(context).pushReplacementNamed('/auth');
               }
             },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
             child: const Text('Logout'),
           ),
         ],

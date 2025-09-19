@@ -168,7 +168,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     return BookGridTile(
                       book: book,
                       onTap: () => _openBook(book),
-                      onDelete: () => _showDeleteDialog(bookProvider, book),
+                      onFavorite: () => bookProvider.toggleFavorite(book.id),
+                      onMarkCompleted: () => bookProvider.toggleCompletion(book.id),
                     );
                   },
                 );
@@ -222,26 +223,4 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  void _showDeleteDialog(BookProvider bookProvider, book) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Book'),
-        content: Text('Are you sure you want to delete "${book.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              bookProvider.deleteBook(book.id);
-            },
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-  }
 }

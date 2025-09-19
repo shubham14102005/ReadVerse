@@ -6,6 +6,7 @@ import '../providers/book_provider.dart';
 import '../providers/navigation_provider.dart';
 import '../widgets/book_list_tile.dart';
 import 'reader_screen.dart';
+import 'favorite_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,6 +59,19 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         elevation: 0,
         actions: [
+          // Add Book Button
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: IconButton(
+              onPressed: () => _addBook(),
+              icon: const Icon(Icons.add, color: Colors.white),
+              tooltip: 'Add Book',
+            ),
+          ),
           Consumer<AuthProvider>(
             builder: (context, authProvider, child) {
               return PopupMenuButton<String>(
@@ -188,41 +202,82 @@ class _HomeScreenState extends State<HomeScreen> {
                 return BookListTile(
                   book: book,
                   onTap: () => _openBook(book),
-                  onDelete: () => _showDeleteDialog(bookProvider, book),
+                  onFavorite: () => bookProvider.toggleFavorite(book.id),
+                  onMarkCompleted: () => bookProvider.toggleCompletion(book.id),
                 );
               },
             ),
           );
         },
       ),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [
-              Theme.of(context).primaryColor,
-              Theme.of(context).primaryColor.withValues(alpha: 0.8),
+      floatingActionButton: Consumer<BookProvider>(
+        builder: (context, bookProvider, child) {
+          final favoritesCount = bookProvider.favoriteBooksCount;
+          
+          return Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.red,
+                      Colors.red.withValues(alpha: 0.8),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.red.withValues(alpha: 0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: FloatingActionButton(
+                  onPressed: () => _openFavorites(),
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  child: const Icon(
+                    Icons.favorite,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+              ),
+              if (favoritesCount > 0)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.orange,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2,
+                      ),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 24,
+                      minHeight: 24,
+                    ),
+                    child: Text(
+                      favoritesCount > 99 ? '99+' : favoritesCount.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
             ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.4),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: () => _addBook(),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
-            size: 28,
-          ),
-        ),
+          );
+        },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -333,28 +388,14 @@ class _HomeScreenState extends State<HomeScreen> {
     Provider.of<BookProvider>(context, listen: false).addBook();
   }
 
-  void _showDeleteDialog(BookProvider bookProvider, book) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Book'),
-        content: Text('Are you sure you want to delete "${book.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              bookProvider.deleteBook(book.id);
-            },
-            child: const Text('Delete'),
-          ),
-        ],
+  void _openFavorites() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const FavoriteScreen(),
       ),
     );
   }
+
 
   void _navigateToProfile() {
     // Navigate to profile screen by changing the navigation index

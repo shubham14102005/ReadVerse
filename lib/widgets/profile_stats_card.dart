@@ -10,8 +10,6 @@ class ProfileStatsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final totalBooks = books.length;
     final completedBooks = books.where((book) => book.progress >= 1.0).length;
-    final readPages = books.fold(
-        0, (sum, book) => sum + (book.totalPages * book.progress).round());
     final readingTime = _calculateReadingTime(books);
 
     return Card(
@@ -55,47 +53,17 @@ class ProfileStatsCard extends StatelessWidget {
                 Expanded(
                   child: _buildStatItem(
                     context,
-                    'Pages Read',
-                    readPages.toString(),
-                    Icons.menu_book,
-                    Colors.orange,
-                  ),
-                ),
-                Expanded(
-                  child: _buildStatItem(
-                    context,
                     'Reading Time',
                     readingTime,
                     Icons.schedule,
                     Colors.purple,
                   ),
                 ),
+                Expanded(
+                  child: Container(), // Empty space for better layout
+                ),
               ],
             ),
-            if (totalBooks > 0) ...[
-              const SizedBox(height: 20),
-              Text(
-                'Completion Rate',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              const SizedBox(height: 8),
-              LinearProgressIndicator(
-                value: totalBooks > 0 ? completedBooks / totalBooks : 0.0,
-                backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColor,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '${totalBooks > 0 ? ((completedBooks / totalBooks) * 100).toInt() : 0}% of books completed',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
-                    ),
-              ),
-            ],
           ],
         ),
       ),

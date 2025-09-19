@@ -5,6 +5,7 @@ import 'providers/auth_provider.dart';
 import 'providers/book_provider.dart';
 import 'providers/navigation_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/user_profile_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/main_navigation.dart';
 import 'screens/auth_screen.dart';
@@ -38,6 +39,7 @@ class ReadVerseApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => BookProvider()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => UserProfileProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

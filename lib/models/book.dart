@@ -10,6 +10,8 @@ class Book {
   final DateTime dateAdded;
   final DateTime? lastRead;
   final double progress;
+  final bool isFavorite;
+  final int readingTimeMinutes;
 
   Book({
     required this.id,
@@ -23,6 +25,8 @@ class Book {
     required this.dateAdded,
     this.lastRead,
     this.progress = 0.0,
+    this.isFavorite = false,
+    this.readingTimeMinutes = 0,
   });
 
   Map<String, dynamic> toMap() {
@@ -38,6 +42,8 @@ class Book {
       'dateAdded': dateAdded.millisecondsSinceEpoch,
       'lastRead': lastRead?.millisecondsSinceEpoch,
       'progress': progress,
+      'isFavorite': isFavorite,
+      'readingTimeMinutes': readingTimeMinutes,
     };
   }
 
@@ -56,6 +62,8 @@ class Book {
           ? DateTime.fromMillisecondsSinceEpoch(map['lastRead'])
           : null,
       progress: map['progress']?.toDouble() ?? 0.0,
+      isFavorite: map['isFavorite'] ?? false,
+      readingTimeMinutes: map['readingTimeMinutes'] ?? 0,
     );
   }
 
@@ -71,6 +79,8 @@ class Book {
     DateTime? dateAdded,
     DateTime? lastRead,
     double? progress,
+    bool? isFavorite,
+    int? readingTimeMinutes,
   }) {
     return Book(
       id: id ?? this.id,
@@ -84,6 +94,8 @@ class Book {
       dateAdded: dateAdded ?? this.dateAdded,
       lastRead: lastRead ?? this.lastRead,
       progress: progress ?? this.progress,
+      isFavorite: isFavorite ?? this.isFavorite,
+      readingTimeMinutes: readingTimeMinutes ?? this.readingTimeMinutes,
     );
   }
 }

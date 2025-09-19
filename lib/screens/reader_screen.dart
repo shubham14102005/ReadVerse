@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import '../providers/book_provider.dart';
 import '../models/book.dart';
+import '../widgets/text_reader.dart';
 
 class ReaderScreen extends StatefulWidget {
   final Book book;
@@ -41,6 +42,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
         await _loadPDF();
       } else if (_book.fileType == 'epub') {
         await _loadEPUB();
+      } else if (_book.fileType == 'txt') {
+        await _loadText();
       }
 
       setState(() {
@@ -65,6 +68,22 @@ class _ReaderScreenState extends State<ReaderScreen> {
     setState(() {
       _totalPages = 100; // Default page count for EPUB
     });
+  }
+
+  Future<void> _loadText() async {
+    // For text files, we'll navigate to our custom text reader immediately
+    // Use a delay to ensure the current widget is fully built before navigation
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => TextReader(
+            filePath: _book.filePath,
+            bookTitle: _book.title,
+          ),
+        ),
+      );
+    }
   }
 
   void _updateProgress() {
@@ -164,6 +183,11 @@ class _ReaderScreenState extends State<ReaderScreen> {
       return _buildPDFViewer();
     } else if (_book.fileType == 'epub') {
       return _buildEPUBViewer();
+    } else if (_book.fileType == 'txt') {
+      // Text files should be handled by the TextReader widget
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
     }
 
     return const Center(

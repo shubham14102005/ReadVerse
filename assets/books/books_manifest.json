@@ -1,0 +1,40 @@
+{
+  "books": [
+    {
+      "id": "book_1",
+      "title": "The Art of Programming",
+      "author": "Code Master",
+      "fileName": "programming_guide.txt",
+      "fileType": "txt",
+      "totalPages": 150,
+      "description": "A comprehensive guide to programming principles and best practices.",
+      "category": "Technology",
+      "publishedYear": 2023,
+      "language": "English"
+    },
+    {
+      "id": "book_2", 
+      "title": "Digital Photography Basics",
+      "author": "Photo Pro",
+      "fileName": "photography_basics.txt",
+      "fileType": "txt",
+      "totalPages": 120,
+      "description": "Learn the fundamentals of digital photography, from composition to editing.",
+      "category": "Arts",
+      "publishedYear": 2022,
+      "language": "English"
+    },
+    {
+      "id": "book_3",
+      "title": "Healthy Living Guide",
+      "author": "Dr. Wellness",
+      "fileName": "healthy_living.txt", 
+      "fileType": "txt",
+      "totalPages": 200,
+      "description": "A complete guide to maintaining a healthy lifestyle through diet and exercise.",
+      "category": "Health",
+      "publishedYear": 2023,
+      "language": "English"
+    }
+  ]
+}

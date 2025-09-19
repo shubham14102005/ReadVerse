@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../providers/auth_provider.dart';
 import '../providers/book_provider.dart';
+import '../providers/user_profile_provider.dart';
 import '../widgets/profile_stats_card.dart';
-import '../widgets/achievement_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -58,9 +58,9 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer2<AuthProvider, BookProvider>(
-        builder: (context, authProvider, bookProvider, child) {
-          if (authProvider.isLoading) {
+      body: Consumer3<AuthProvider, BookProvider, UserProfileProvider>(
+        builder: (context, authProvider, bookProvider, userProfileProvider, child) {
+          if (authProvider.isLoading || userProfileProvider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -69,19 +69,15 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               children: [
                 // Profile Header
-                _buildProfileHeader(context, authProvider),
+                _buildProfileHeader(context, authProvider, userProfileProvider),
                 const SizedBox(height: 24),
 
                 // Profile Stats
                 ProfileStatsCard(books: bookProvider.books),
                 const SizedBox(height: 24),
 
-                // Achievements
-                _buildAchievementsSection(context, bookProvider.books),
-                const SizedBox(height: 24),
-
                 // Reading Goals
-                _buildReadingGoalsSection(context),
+                _buildReadingGoalsSection(context, userProfileProvider),
                 const SizedBox(height: 24),
 
                 // Settings Options
@@ -94,10 +90,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, AuthProvider authProvider) {
+  Widget _buildProfileHeader(BuildContext context, AuthProvider authProvider, UserProfileProvider userProfileProvider) {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -142,26 +138,30 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _getUserName(authProvider.user),
+                  userProfileProvider.userProfile?.displayName ?? _getUserName(authProvider.user),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  _getUserEmail(authProvider.user),
+                  userProfileProvider.userProfile?.email ?? _getUserEmail(authProvider.user),
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.white70,
                         fontSize: 16,
                       ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
                 const SizedBox(height: 12),
                 Container(
@@ -184,12 +184,15 @@ class ProfileScreen extends StatelessWidget {
                         size: 16,
                       ),
                       const SizedBox(width: 6),
-                      Text(
-                        'Member since ${_formatJoinDate(authProvider.user?.metadata.creationTime)}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w500,
-                            ),
+                      Flexible(
+                        child: Text(
+                          'Member since ${_formatJoinDate(userProfileProvider.userProfile?.joinDate ?? authProvider.user?.metadata.creationTime)}',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.w500,
+                              ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
@@ -202,69 +205,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAchievementsSection(BuildContext context, List books) {
-    final completedBooks = books.where((book) => book.progress >= 1.0).length;
-    final totalPages =
-        books.fold<int>(0, (sum, book) => sum + (book.totalPages as int));
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Achievements',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: AchievementCard(
-                title: 'First Book',
-                description: 'Read your first book',
-                icon: Icons.star,
-                isUnlocked: books.isNotEmpty,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: AchievementCard(
-                title: 'Bookworm',
-                description: 'Complete 5 books',
-                icon: Icons.auto_stories,
-                isUnlocked: completedBooks >= 5,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: AchievementCard(
-                title: 'Page Turner',
-                description: 'Read 1000 pages',
-                icon: Icons.menu_book,
-                isUnlocked: totalPages >= 1000,
-              ),
-            ),
-            const SizedBox(width: 12),
-            const Expanded(
-              child: AchievementCard(
-                title: 'Speed Reader',
-                description: 'Read 10 books in a month',
-                icon: Icons.speed,
-                isUnlocked: false, // This would need more complex logic
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildReadingGoalsSection(BuildContext context) {
+  Widget _buildReadingGoalsSection(BuildContext context, UserProfileProvider userProfileProvider) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -286,14 +228,14 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Books this year: 0 / 12',
+                  'Books this year: ${userProfileProvider.userProfile?.booksCompletedThisYear ?? 0} / ${userProfileProvider.userProfile?.readingGoal ?? 12}',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),
             const SizedBox(height: 8),
             LinearProgressIndicator(
-              value: 0.0, // This would be calculated based on actual progress
+              value: _calculateGoalProgress(userProfileProvider.userProfile),
               backgroundColor: Colors.grey[300],
               valueColor: AlwaysStoppedAnimation<Color>(
                 Theme.of(context).primaryColor,
@@ -314,7 +256,7 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildSettingsOptions(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -435,6 +377,9 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.grey[700],
+            ),
             child: const Text('Cancel'),
           ),
           TextButton(
@@ -445,6 +390,9 @@ class ProfileScreen extends StatelessWidget {
                 Navigator.of(context).pushReplacementNamed('/auth');
               }
             },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
             child: const Text('Logout'),
           ),
         ],
@@ -518,6 +466,9 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.grey[700],
+            ),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
@@ -572,24 +523,45 @@ class ProfileScreen extends StatelessWidget {
                 subtitle: const Text('Allow app to collect usage data'),
                 value: dataCollection,
                 onChanged: (value) => setState(() => dataCollection = value),
+                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return Theme.of(context).primaryColor;
+                  }
+                  return Colors.white;
+                }),
               ),
               SwitchListTile(
                 title: const Text('Analytics'),
                 subtitle: const Text('Help improve the app with analytics'),
                 value: analytics,
                 onChanged: (value) => setState(() => analytics = value),
+                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return Theme.of(context).primaryColor;
+                  }
+                  return Colors.white;
+                }),
               ),
               SwitchListTile(
                 title: const Text('Crash Reports'),
                 subtitle: const Text('Send crash reports to help fix bugs'),
                 value: crashReports,
                 onChanged: (value) => setState(() => crashReports = value),
+                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return Theme.of(context).primaryColor;
+                  }
+                  return Colors.white;
+                }),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey[700],
+              ),
               child: const Text('Cancel'),
             ),
             ElevatedButton(
@@ -605,6 +577,11 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  double _calculateGoalProgress(userProfile) {
+    if (userProfile == null || userProfile.readingGoal == 0) return 0.0;
+    return (userProfile.booksCompletedThisYear / userProfile.readingGoal).clamp(0.0, 1.0);
   }
 
   void _showHelpAndSupport(BuildContext context) {
