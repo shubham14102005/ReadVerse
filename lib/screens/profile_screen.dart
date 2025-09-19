@@ -5,6 +5,7 @@ import '../providers/auth_provider.dart';
 import '../providers/book_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/profile_stats_card.dart';
+import '../widgets/themed_background.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -58,60 +59,51 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer3<AuthProvider, BookProvider, UserProfileProvider>(
-        builder: (context, authProvider, bookProvider, userProfileProvider, child) {
-          if (authProvider.isLoading || userProfileProvider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: ThemedBackground(
+        child: Consumer3<AuthProvider, BookProvider, UserProfileProvider>(
+          builder: (context, authProvider, bookProvider, userProfileProvider, child) {
+            if (authProvider.isLoading || userProfileProvider.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                // Profile Header
-                _buildProfileHeader(context, authProvider, userProfileProvider),
-                const SizedBox(height: 24),
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  // Profile Header
+                  _buildProfileHeader(context, authProvider, userProfileProvider),
+                  const SizedBox(height: 24),
 
-                // Profile Stats
-                ProfileStatsCard(books: bookProvider.books),
-                const SizedBox(height: 24),
+                  // Profile Stats
+                  ProfileStatsCard(books: bookProvider.books),
+                  const SizedBox(height: 24),
 
-                // Reading Goals
-                _buildReadingGoalsSection(context, userProfileProvider),
-                const SizedBox(height: 24),
-
-                // Settings Options
-                _buildSettingsOptions(context),
-              ],
-            ),
-          );
-        },
+                  // Reading Goals
+                  _buildReadingGoalsSection(context, userProfileProvider),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _editProfile(context),
+        backgroundColor: Theme.of(context).primaryColor,
+        heroTag: "profile_edit_fab", // Unique hero tag to avoid conflicts
+        child: const Icon(
+          Icons.edit,
+          color: Colors.white,
+        ),
+        tooltip: 'Edit Profile',
       ),
     );
   }
 
   Widget _buildProfileHeader(BuildContext context, AuthProvider authProvider, UserProfileProvider userProfileProvider) {
-    return Container(
+    return ThemedGradientContainer(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withValues(alpha: 0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+      borderRadius: BorderRadius.circular(20),
       child: Row(
         children: [
           Container(
@@ -143,15 +135,40 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  userProfileProvider.userProfile?.displayName ?? _getUserName(authProvider.user),
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        userProfileProvider.userProfile?.displayName ?? _getUserName(authProvider.user),
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                    ),
+                    GestureDetector(
+                      onTap: () => _editProfile(context),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.25),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -207,166 +224,124 @@ class ProfileScreen extends StatelessWidget {
 
 
   Widget _buildReadingGoalsSection(BuildContext context, UserProfileProvider userProfileProvider) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Reading Goals',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(
-                  Icons.flag,
-                  color: Theme.of(context).primaryColor,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Books this year: ${userProfileProvider.userProfile?.booksCompletedThisYear ?? 0} / ${userProfileProvider.userProfile?.readingGoal ?? 12}',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: _calculateGoalProgress(userProfileProvider.userProfile),
-              backgroundColor: Colors.grey[300],
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).primaryColor,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Set your reading goals to track your progress and stay motivated!',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSettingsOptions(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _buildSettingsTile(
-            context,
-            icon: Icons.person,
-            title: 'Edit Profile',
-            subtitle: 'Update your personal information',
-            onTap: () => _editProfile(context),
-          ),
-          _buildDivider(),
-          _buildSettingsTile(
-            context,
-            icon: Icons.privacy_tip,
-            title: 'Privacy',
-            subtitle: 'Control your privacy settings',
-            onTap: () => _showPrivacySettings(context),
-          ),
-          _buildDivider(),
-          _buildSettingsTile(
-            context,
-            icon: Icons.help,
-            title: 'Help & Support',
-            subtitle: 'Get help and contact support',
-            onTap: () => _showHelpAndSupport(context),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSettingsTile(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
+    return Consumer<BookProvider>(
+      builder: (context, bookProvider, child) {
+        // Get real-time completed books count
+        final completedCount = bookProvider.completedBooksCount;
+        final goalCount = userProfileProvider.userProfile?.readingGoal ?? 12;
+        final progressValue = goalCount > 0 ? (completedCount / goalCount).clamp(0.0, 1.0) : 0.0;
+        
+        return ThemedCard(
           padding: const EdgeInsets.all(20),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  icon,
-                  color: Theme.of(context).primaryColor,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[800],
-                          ),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.flag,
+                        color: Theme.of(context).primaryColor,
+                        size: 24,
+                      ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Reading Goals ${DateTime.now().year}',
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).brightness == Brightness.dark 
+                                      ? Colors.white 
+                                      : Colors.grey[800],
+                                ),
                           ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '$completedCount of $goalCount books completed',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context).brightness == Brightness.dark 
+                                      ? Colors.grey[400] 
+                                      : Colors.grey[600],
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${(progressValue * 100).round()}%',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.grey[400],
-                size: 16,
-              ),
-            ],
-          ),
-        ),
-      ),
+                const SizedBox(height: 20),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: LinearProgressIndicator(
+                    value: progressValue,
+                    minHeight: 8,
+                    backgroundColor: Theme.of(context).brightness == Brightness.dark 
+                        ? Colors.grey[700] 
+                        : Colors.grey[300],
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Icon(
+                      progressValue >= 1.0 ? Icons.celebration : Icons.trending_up,
+                      color: progressValue >= 1.0 ? Colors.amber : Theme.of(context).primaryColor,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        progressValue >= 1.0 
+                            ? '🎉 Congratulations! You\'ve reached your reading goal!'
+                            : completedCount > 0
+                                ? 'Great progress! Keep reading to reach your goal.'
+                                : 'Start reading to track your progress towards your goal!',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).brightness == Brightness.dark 
+                                  ? Colors.grey[400] 
+                                  : Colors.grey[600],
+                              fontStyle: FontStyle.italic,
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+        );
+      },
     );
   }
 
-  Widget _buildDivider() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      height: 1,
-      color: Colors.grey[200],
-    );
-  }
+
+
 
   void _showLogoutDialog(BuildContext context) {
     showDialog(
@@ -432,36 +407,68 @@ class ProfileScreen extends StatelessWidget {
 
   void _editProfile(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final userProfileProvider = Provider.of<UserProfileProvider>(context, listen: false);
+    
+    // Get current values from both providers
+    final currentDisplayName = userProfileProvider.userProfile?.displayName ?? 
+                              authProvider.user?.displayName ?? '';
+    final currentEmail = userProfileProvider.userProfile?.email ?? 
+                        authProvider.user?.email ?? '';
+    
     final TextEditingController nameController = TextEditingController(
-      text: authProvider.user?.displayName ?? '',
+      text: currentDisplayName,
     );
     final TextEditingController emailController = TextEditingController(
-      text: authProvider.user?.email ?? '',
+      text: currentEmail,
+    );
+    final TextEditingController readingGoalController = TextEditingController(
+      text: (userProfileProvider.userProfile?.readingGoal ?? 12).toString(),
     );
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Edit Profile'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
+        title: const Row(
           children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Display Name',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Icon(Icons.edit, size: 24),
+            SizedBox(width: 8),
+            Text('Edit Profile'),
           ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Display Name',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.email),
+                ),
+                enabled: false, // Email cannot be changed easily
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: readingGoalController,
+                decoration: const InputDecoration(
+                  labelText: 'Reading Goal (books per year)',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.flag),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
@@ -473,159 +480,108 @@ class ProfileScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () async {
-              if (nameController.text.isNotEmpty) {
-                debugPrint(
-                    'Updating profile with name: ${nameController.text}');
-                final success =
-                    await authProvider.updateProfile(nameController.text);
-                debugPrint('Profile update success: $success');
-                if (context.mounted) {
-                  if (success) {
-                    debugPrint(
-                        'Current user display name: ${authProvider.user?.displayName}');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Profile updated successfully!')),
-                    );
+              if (nameController.text.trim().isNotEmpty) {
+                try {
+                  // Show loading indicator
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                  
+                  // Update Firebase Auth profile
+                  final authSuccess = await authProvider.updateProfile(nameController.text.trim());
+                  
+                  // Update UserProfile
+                  await userProfileProvider.updateProfile(
+                    displayName: nameController.text.trim(),
+                    email: emailController.text.trim(),
+                    readingGoal: int.tryParse(readingGoalController.text) ?? 12,
+                  );
+                  
+                  if (context.mounted) {
+                    // Hide loading indicator
                     Navigator.of(context).pop();
-                  } else {
+                    
+                    if (authSuccess) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(Icons.check_circle, color: Colors.white),
+                              SizedBox(width: 8),
+                              Text('Profile updated successfully!'),
+                            ],
+                          ),
+                          backgroundColor: Colors.green,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                      Navigator.of(context).pop(); // Close edit dialog
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              const Icon(Icons.error, color: Colors.white),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(authProvider.errorMessage ?? 'Failed to update profile'),
+                              ),
+                            ],
+                          ),
+                          backgroundColor: Colors.red,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    // Hide loading indicator if still showing
+                    Navigator.of(context).pop();
+                    
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                          content: Text(authProvider.errorMessage ??
-                              'Failed to update profile')),
+                        content: Row(
+                          children: [
+                            const Icon(Icons.error, color: Colors.white),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text('Error updating profile: $e')),
+                          ],
+                        ),
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                      ),
                     );
                   }
                 }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Display name cannot be empty'),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
               }
             },
-            child: const Text('Save'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Save Changes'),
           ),
         ],
       ),
     );
   }
 
-  void _showPrivacySettings(BuildContext context) {
-    bool dataCollection = true;
-    bool analytics = true;
-    bool crashReports = true;
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Privacy Settings'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SwitchListTile(
-                title: const Text('Data Collection'),
-                subtitle: const Text('Allow app to collect usage data'),
-                value: dataCollection,
-                onChanged: (value) => setState(() => dataCollection = value),
-                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                  if (states.contains(MaterialState.selected)) {
-                    return Theme.of(context).primaryColor;
-                  }
-                  return Colors.white;
-                }),
-              ),
-              SwitchListTile(
-                title: const Text('Analytics'),
-                subtitle: const Text('Help improve the app with analytics'),
-                value: analytics,
-                onChanged: (value) => setState(() => analytics = value),
-                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                  if (states.contains(MaterialState.selected)) {
-                    return Theme.of(context).primaryColor;
-                  }
-                  return Colors.white;
-                }),
-              ),
-              SwitchListTile(
-                title: const Text('Crash Reports'),
-                subtitle: const Text('Send crash reports to help fix bugs'),
-                value: crashReports,
-                onChanged: (value) => setState(() => crashReports = value),
-                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                  if (states.contains(MaterialState.selected)) {
-                    return Theme.of(context).primaryColor;
-                  }
-                  return Colors.white;
-                }),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.grey[700],
-              ),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Privacy settings saved!')),
-                );
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   double _calculateGoalProgress(userProfile) {
     if (userProfile == null || userProfile.readingGoal == 0) return 0.0;
     return (userProfile.booksCompletedThisYear / userProfile.readingGoal).clamp(0.0, 1.0);
   }
 
-  void _showHelpAndSupport(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Help & Support'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Frequently Asked Questions:',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('Q: How do I add books?'),
-            Text('A: Use the + button on the home screen to import books.'),
-            SizedBox(height: 8),
-            Text('Q: How do I track my reading progress?'),
-            Text('A: Open any book and use the progress slider at the bottom.'),
-            SizedBox(height: 8),
-            Text('Q: Can I change the theme?'),
-            Text('A: Yes, go to Settings > Appearance > Theme Color.'),
-            SizedBox(height: 8),
-            Text('Q: How do I set reading goals?'),
-            Text('A: Go to Settings > Reading > Reading Goals.'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Contact support: support@readverse.com')),
-              );
-              Navigator.of(context).pop();
-            },
-            child: const Text('Contact Support'),
-          ),
-        ],
-      ),
-    );
-  }
 }

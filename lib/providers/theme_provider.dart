@@ -3,11 +3,93 @@ import 'package:flutter/material.dart';
 class ThemeProvider with ChangeNotifier {
   bool _isDarkMode = false;
   Color _primaryColor = Colors.deepPurple;
-  String _fontSize = 'Medium';
+  String _fontStyle = 'Default';
+  String _selectedTheme = 'Classic';
+  String _backgroundImage = '';
+
+  // Beautiful font styles
+  final Map<String, Map<String, dynamic>> _fontStyles = {
+    'Default': {
+      'fontFamily': null,
+      'description': 'System default font',
+    },
+    'Elegant Serif': {
+      'fontFamily': 'serif',
+      'description': 'Classic book reading experience',
+    },
+    'Modern Sans': {
+      'fontFamily': 'sans-serif',
+      'description': 'Clean and modern',
+    },
+    'Monospace Code': {
+      'fontFamily': 'monospace',
+      'description': 'Fixed-width characters',
+    },
+    'Handwritten': {
+      'fontFamily': 'cursive',
+      'description': 'Personal and artistic',
+    },
+    'Fantasy': {
+      'fontFamily': 'fantasy',
+      'description': 'Decorative and unique',
+    },
+  };
+
+  // Beautiful theme options
+  final Map<String, Map<String, dynamic>> _themes = {
+    'Classic': {
+      'primaryColor': Colors.deepPurple,
+      'background': '',
+      'gradient': [Color(0xFF673AB7), Color(0xFF9C27B0)],
+      'description': 'Classic elegance',
+    },
+    'Ocean Breeze': {
+      'primaryColor': Colors.cyan,
+      'background': '',
+      'gradient': [Color(0xFF00BCD4), Color(0xFF0097A7), Color(0xFF006064)],
+      'description': 'Cool ocean vibes',
+    },
+    'Forest Dream': {
+      'primaryColor': Colors.green,
+      'background': '',
+      'gradient': [Color(0xFF4CAF50), Color(0xFF2E7D32), Color(0xFF1B5E20)],
+      'description': 'Natural forest feel',
+    },
+    'Sunset Glow': {
+      'primaryColor': Colors.orange,
+      'background': '',
+      'gradient': [Color(0xFFFF9800), Color(0xFFF57C00), Color(0xFFE65100)],
+      'description': 'Warm sunset colors',
+    },
+    'Midnight Sky': {
+      'primaryColor': Colors.indigo,
+      'background': '',
+      'gradient': [Color(0xFF3F51B5), Color(0xFF283593), Color(0xFF1A237E)],
+      'description': 'Deep night sky',
+    },
+    'Rose Gold': {
+      'primaryColor': Color(0xFFE91E63),
+      'background': '',
+      'gradient': [Color(0xFFE91E63), Color(0xFFC2185B), Color(0xFF880E4F)],
+      'description': 'Elegant rose tones',
+    },
+    'Aurora': {
+      'primaryColor': Color(0xFF9C27B0),
+      'background': '',
+      'gradient': [Color(0xFF9C27B0), Color(0xFF673AB7), Color(0xFF3F51B5)],
+      'description': 'Magical aurora lights',
+    },
+  };
 
   bool get isDarkMode => _isDarkMode;
   Color get primaryColor => _primaryColor;
-  String get fontSize => _fontSize;
+  String get fontStyle => _fontStyle;
+  String get selectedTheme => _selectedTheme;
+  String get backgroundImage => _backgroundImage;
+  Map<String, Map<String, dynamic>> get themes => _themes;
+  Map<String, Map<String, dynamic>> get fontStyles => _fontStyles;
+  List<Color> get currentGradient => _themes[_selectedTheme]?['gradient'] ?? [_primaryColor, _primaryColor];
+  String? get currentFontFamily => _fontStyles[_fontStyle]?['fontFamily'];
 
   void toggleDarkMode() {
     _isDarkMode = !_isDarkMode;
@@ -24,25 +106,22 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setFontSize(String size) {
-    _fontSize = size;
-    notifyListeners();
-  }
-
-  double get fontSizeMultiplier {
-    switch (_fontSize) {
-      case 'Small':
-        return 0.85;
-      case 'Medium':
-        return 1.0;
-      case 'Large':
-        return 1.15;
-      case 'Extra Large':
-        return 1.3;
-      default:
-        return 1.0;
+  void setFontStyle(String style) {
+    if (_fontStyles.containsKey(style)) {
+      _fontStyle = style;
+      notifyListeners();
     }
   }
+
+  void setTheme(String themeName) {
+    if (_themes.containsKey(themeName)) {
+      _selectedTheme = themeName;
+      _primaryColor = _themes[themeName]!['primaryColor'];
+      _backgroundImage = _themes[themeName]!['background'] ?? '';
+      notifyListeners();
+    }
+  }
+
 
   ThemeData get lightTheme {
     return ThemeData(
@@ -55,9 +134,10 @@ class ThemeProvider with ChangeNotifier {
         backgroundColor: _primaryColor,
         foregroundColor: Colors.white,
         titleTextStyle: TextStyle(
-          fontSize: 20 * fontSizeMultiplier,
+          fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.white,
+          fontFamily: currentFontFamily,
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -73,20 +153,30 @@ class ThemeProvider with ChangeNotifier {
       primaryColor: _primaryColor,
       useMaterial3: true,
       brightness: Brightness.dark,
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      cardColor: const Color(0xFF1E1E1E),
+      dialogBackgroundColor: const Color(0xFF1E1E1E),
       textTheme: _getTextTheme(Brightness.dark),
+      cardTheme: const CardThemeData(
+        color: Color(0xFF1E1E1E),
+        elevation: 8,
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: _primaryColor,
         foregroundColor: Colors.white,
         titleTextStyle: TextStyle(
-          fontSize: 20 * fontSizeMultiplier,
+          fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.white,
+          fontFamily: currentFontFamily,
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: _primaryColor,
         foregroundColor: Colors.white,
       ),
+      dividerColor: Colors.grey[700],
+      iconTheme: IconThemeData(color: Colors.grey[300]),
     );
   }
 
@@ -97,40 +187,31 @@ class ThemeProvider with ChangeNotifier {
 
     return baseTextTheme.copyWith(
       headlineLarge: baseTextTheme.headlineLarge?.copyWith(
-        fontSize:
-            (baseTextTheme.headlineLarge?.fontSize ?? 32) * fontSizeMultiplier,
+        fontFamily: currentFontFamily,
       ),
       headlineMedium: baseTextTheme.headlineMedium?.copyWith(
-        fontSize:
-            (baseTextTheme.headlineMedium?.fontSize ?? 28) * fontSizeMultiplier,
+        fontFamily: currentFontFamily,
       ),
       headlineSmall: baseTextTheme.headlineSmall?.copyWith(
-        fontSize:
-            (baseTextTheme.headlineSmall?.fontSize ?? 24) * fontSizeMultiplier,
+        fontFamily: currentFontFamily,
       ),
       titleLarge: baseTextTheme.titleLarge?.copyWith(
-        fontSize:
-            (baseTextTheme.titleLarge?.fontSize ?? 22) * fontSizeMultiplier,
+        fontFamily: currentFontFamily,
       ),
       titleMedium: baseTextTheme.titleMedium?.copyWith(
-        fontSize:
-            (baseTextTheme.titleMedium?.fontSize ?? 16) * fontSizeMultiplier,
+        fontFamily: currentFontFamily,
       ),
       titleSmall: baseTextTheme.titleSmall?.copyWith(
-        fontSize:
-            (baseTextTheme.titleSmall?.fontSize ?? 14) * fontSizeMultiplier,
+        fontFamily: currentFontFamily,
       ),
       bodyLarge: baseTextTheme.bodyLarge?.copyWith(
-        fontSize:
-            (baseTextTheme.bodyLarge?.fontSize ?? 16) * fontSizeMultiplier,
+        fontFamily: currentFontFamily,
       ),
       bodyMedium: baseTextTheme.bodyMedium?.copyWith(
-        fontSize:
-            (baseTextTheme.bodyMedium?.fontSize ?? 14) * fontSizeMultiplier,
+        fontFamily: currentFontFamily,
       ),
       bodySmall: baseTextTheme.bodySmall?.copyWith(
-        fontSize:
-            (baseTextTheme.bodySmall?.fontSize ?? 12) * fontSizeMultiplier,
+        fontFamily: currentFontFamily,
       ),
     );
   }

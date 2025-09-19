@@ -8,44 +8,80 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/book.dart';
+import 'user_profile_provider.dart';
 
 class BookProvider with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  UserProfileProvider? _userProfileProvider;
 
   List<Book> _books = [];
   bool _isLoading = false;
+  bool _booksLoaded = false;
   String? _errorMessage;
 
   List<Book> get books => _books;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-
-  BookProvider() {
-    loadBooks();
+  
+  // Method to set the UserProfileProvider dependency
+  void setUserProfileProvider(UserProfileProvider userProfileProvider) {
+    _userProfileProvider = userProfileProvider;
   }
 
-  Future<void> loadBooks() async {
+  BookProvider() {
+    // Listen to auth state changes and reload books accordingly
+    _auth.authStateChanges().listen((user) {
+      debugPrint('Auth state changed: ${user != null ? 'logged in' : 'logged out'}');
+      // Force reload when auth state changes
+      _booksLoaded = false;
+      loadBooks(force: true);
+    });
+  }
+
+  Future<void> loadBooks({bool force = false}) async {
+    // Prevent multiple simultaneous calls
+    if (_isLoading) {
+      debugPrint('loadBooks() already in progress, skipping...');
+      return;
+    }
+
+    // Skip if books already loaded unless forced
+    if (_booksLoaded && !force) {
+      debugPrint('Books already loaded, skipping... (use force: true to reload)');
+      return;
+    }
+
     try {
       _isLoading = true;
       notifyListeners();
 
+      // Clear existing books to prevent duplicates
+      _books.clear();
+      debugPrint('Loading books... User authenticated: ${_auth.currentUser != null}');
+
       // Always load asset books first
       await _loadBooksFromAssets();
+      debugPrint('Asset books loaded: ${_books.length}');
 
       if (_auth.currentUser != null) {
         // Load from Firestore if user is authenticated
+        debugPrint('Loading from Firestore...');
         await _loadBooksFromFirestore();
       } else {
         // Load from local storage
+        debugPrint('Loading from local storage...');
         await _loadBooksFromLocal();
       }
 
+      debugPrint('Total books loaded: ${_books.length}');
+      _booksLoaded = true;
       _isLoading = false;
       notifyListeners();
     } catch (e) {
       _isLoading = false;
       _errorMessage = 'Error loading books: $e';
+      debugPrint('Error loading books: $e');
       notifyListeners();
     }
   }
@@ -68,11 +104,12 @@ class BookProvider with ChangeNotifier {
           fileType: bookData['fileType'],
           totalPages: bookData['totalPages'],
           dateAdded: DateTime.now(),
+          isAssetBook: true, // Mark as asset book
         );
       }).toList();
 
-      // Add asset books to the beginning of the list
-      _books.insertAll(0, assetBooks);
+      // Add asset books to the list
+      _books.addAll(assetBooks);
     } catch (e) {
       debugPrint('Failed to load asset books: $e');
       // Don't throw error for asset books, continue loading other books
@@ -90,10 +127,12 @@ class BookProvider with ChangeNotifier {
 
       final userBooks = snapshot.docs
           .map((doc) => Book.fromMap(doc.data() as Map<String, dynamic>))
+          .where((book) => !book.isAssetBook) // Filter out any asset books that might be in Firestore
           .toList();
       
       // Add user books after asset books
       _books.addAll(userBooks);
+      debugPrint('Loaded ${userBooks.length} user books from Firestore');
     } catch (e) {
       throw Exception('Failed to load books from cloud: $e');
     }
@@ -106,15 +145,25 @@ class BookProvider with ChangeNotifier {
 
       if (bookStrings != null) {
         final localBooks = bookStrings
-            .map((bookString) => Book.fromMap(
-                Map<String, dynamic>.from(Uri.splitQueryString(bookString))))
+            .map((bookString) {
+              try {
+                return Book.fromMap(json.decode(bookString));
+              } catch (e) {
+                debugPrint('Error parsing book: $bookString, Error: $e');
+                return null;
+              }
+            })
+            .where((book) => book != null && !book!.isAssetBook) // Filter out nulls and asset books
+            .cast<Book>()
             .toList();
         
         // Add local books after asset books
         _books.addAll(localBooks);
+        debugPrint('Loaded ${localBooks.length} user books from local storage');
       }
     } catch (e) {
-      throw Exception('Failed to load books from local storage: $e');
+      debugPrint('Failed to load books from local storage: $e');
+      // Don't throw exception for local storage, just continue without books
     }
   }
 
@@ -162,13 +211,17 @@ class BookProvider with ChangeNotifier {
         );
 
         _books.insert(0, book);
+        debugPrint('Added book to list: ${book.title}, Total books: ${_books.length}');
 
         if (_auth.currentUser != null) {
+          debugPrint('Saving book to Firestore...');
           await _saveBookToFirestore(book);
         } else {
+          debugPrint('Saving book to local storage...');
           await _saveBooksToLocal();
         }
 
+        debugPrint('Book saved successfully, notifying listeners...');
         notifyListeners();
       }
     } catch (e) {
@@ -179,6 +232,12 @@ class BookProvider with ChangeNotifier {
 
   Future<void> _saveBookToFirestore(Book book) async {
     try {
+      // Don't save asset books to Firestore
+      if (book.isAssetBook) {
+        debugPrint('Skipping save to Firestore for asset book: ${book.title}');
+        return;
+      }
+      
       await _firestore
           .collection('users')
           .doc(_auth.currentUser!.uid)
@@ -193,20 +252,27 @@ class BookProvider with ChangeNotifier {
   Future<void> _saveBooksToLocal() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final bookStrings = _books
-          .map((book) => Uri(
-              queryParameters: book
-                  .toMap()
-                  .map((key, value) => MapEntry(key, value.toString()))).query)
+      // Only save user books, exclude asset books
+      final userBooks = _books.where((book) => !book.isAssetBook).toList();
+      final bookStrings = userBooks
+          .map((book) => json.encode(book.toMap()))
           .toList();
       await prefs.setStringList('books', bookStrings);
+      debugPrint('Successfully saved ${bookStrings.length} user books to local storage (excluding ${_books.length - userBooks.length} asset books)');
     } catch (e) {
-      throw Exception('Failed to save books locally: $e');
+      debugPrint('Failed to save books locally: $e');
+      _errorMessage = 'Failed to save books locally: $e';
     }
   }
 
   Future<void> updateBookProgress(Book book, int currentPage) async {
     try {
+      // Skip updating asset books
+      if (book.isAssetBook) {
+        debugPrint('Cannot update progress for asset book: ${book.title}');
+        return;
+      }
+      
       final updatedBook = book.copyWith(
         currentPage: currentPage,
         lastRead: DateTime.now(),
@@ -266,16 +332,65 @@ class BookProvider with ChangeNotifier {
     try {
       final index = _books.indexWhere((book) => book.id == bookId);
       if (index != -1) {
-        final updatedBook = _books[index].copyWith(
-          isFavorite: !_books[index].isFavorite,
-        );
+        final book = _books[index];
         
-        _books[index] = updatedBook;
-        
-        if (_auth.currentUser != null) {
-          await _saveBookToFirestore(updatedBook);
+        // For asset books, check if user copy already exists
+        if (book.isAssetBook) {
+          final existingUserCopy = _findUserCopyOfAsset(book);
+          
+          if (existingUserCopy != null) {
+            // Update existing user copy
+            final existingIndex = _books.indexWhere((b) => b.id == existingUserCopy.id);
+            if (existingIndex != -1) {
+              final updatedUserCopy = existingUserCopy.copyWith(
+                isFavorite: !existingUserCopy.isFavorite,
+              );
+              
+              _books[existingIndex] = updatedUserCopy;
+              
+              // Save the updated user copy
+              if (_auth.currentUser != null) {
+                await _saveBookToFirestore(updatedUserCopy);
+              } else {
+                await _saveBooksToLocal();
+              }
+              
+              debugPrint('Updated existing user copy favorite status: ${book.title}');
+            }
+          } else {
+            // Create a new user copy of the asset book
+            final userCopy = book.copyWith(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              isAssetBook: false,
+              isFavorite: !book.isFavorite,
+              dateAdded: DateTime.now(),
+            );
+            
+            // Add the user copy to the list
+            _books.insert(index + 1, userCopy);
+            
+            // Save the user copy
+            if (_auth.currentUser != null) {
+              await _saveBookToFirestore(userCopy);
+            } else {
+              await _saveBooksToLocal();
+            }
+            
+            debugPrint('Created new user copy of asset book: ${book.title}');
+          }
         } else {
-          await _saveBooksToLocal();
+          // Normal user book - just update it
+          final updatedBook = book.copyWith(
+            isFavorite: !book.isFavorite,
+          );
+          
+          _books[index] = updatedBook;
+          
+          if (_auth.currentUser != null) {
+            await _saveBookToFirestore(updatedBook);
+          } else {
+            await _saveBooksToLocal();
+          }
         }
         
         notifyListeners();
@@ -291,19 +406,82 @@ class BookProvider with ChangeNotifier {
       final index = _books.indexWhere((book) => book.id == bookId);
       if (index != -1) {
         final book = _books[index];
-        final newProgress = book.progress >= 1.0 ? 0.0 : 1.0;
-        final updatedBook = book.copyWith(
-          progress: newProgress,
-          currentPage: newProgress >= 1.0 ? book.totalPages : 0,
-          lastRead: DateTime.now(),
-        );
         
-        _books[index] = updatedBook;
-        
-        if (_auth.currentUser != null) {
-          await _saveBookToFirestore(updatedBook);
+        // For asset books, check if user copy already exists
+        if (book.isAssetBook) {
+          final existingUserCopy = _findUserCopyOfAsset(book);
+          
+          if (existingUserCopy != null) {
+            // Update existing user copy
+            final existingIndex = _books.indexWhere((b) => b.id == existingUserCopy.id);
+            if (existingIndex != -1) {
+              final newProgress = existingUserCopy.progress >= 1.0 ? 0.0 : 1.0;
+              final updatedUserCopy = existingUserCopy.copyWith(
+                progress: newProgress,
+                currentPage: newProgress >= 1.0 ? existingUserCopy.totalPages : 0,
+                lastRead: DateTime.now(),
+              );
+              
+              _books[existingIndex] = updatedUserCopy;
+              
+              // Save the updated user copy
+              if (_auth.currentUser != null) {
+                await _saveBookToFirestore(updatedUserCopy);
+              } else {
+                await _saveBooksToLocal();
+              }
+              
+              debugPrint('Updated existing user copy completion status: ${book.title}');
+              
+              // Update reading stats
+              await _updateReadingStats();
+            }
+          } else {
+            // Create a new user copy of the asset book
+            final newProgress = book.progress >= 1.0 ? 0.0 : 1.0;
+            final userCopy = book.copyWith(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              isAssetBook: false,
+              progress: newProgress,
+              currentPage: newProgress >= 1.0 ? book.totalPages : 0,
+              lastRead: DateTime.now(),
+              dateAdded: DateTime.now(),
+            );
+            
+            // Add the user copy to the list
+            _books.insert(index + 1, userCopy);
+            
+            // Save the user copy
+            if (_auth.currentUser != null) {
+              await _saveBookToFirestore(userCopy);
+            } else {
+              await _saveBooksToLocal();
+            }
+            
+            debugPrint('Created new user copy of asset book for completion: ${book.title}');
+            
+            // Update reading stats
+            await _updateReadingStats();
+          }
         } else {
-          await _saveBooksToLocal();
+          // Normal user book - just update it
+          final newProgress = book.progress >= 1.0 ? 0.0 : 1.0;
+          final updatedBook = book.copyWith(
+            progress: newProgress,
+            currentPage: newProgress >= 1.0 ? book.totalPages : 0,
+            lastRead: DateTime.now(),
+          );
+          
+          _books[index] = updatedBook;
+          
+          if (_auth.currentUser != null) {
+            await _saveBookToFirestore(updatedBook);
+          } else {
+            await _saveBooksToLocal();
+          }
+          
+          // Update reading stats
+          await _updateReadingStats();
         }
         
         notifyListeners();
@@ -311,6 +489,38 @@ class BookProvider with ChangeNotifier {
     } catch (e) {
       _errorMessage = 'Error updating completion status: $e';
       notifyListeners();
+    }
+  }
+
+  // Helper method to find existing user copy of an asset book
+  Book? _findUserCopyOfAsset(Book assetBook) {
+    if (!assetBook.isAssetBook) return null;
+    
+    try {
+      return _books.firstWhere(
+        (book) => 
+          !book.isAssetBook && 
+          book.title == assetBook.title && 
+          book.author == assetBook.author &&
+          book.fileName == assetBook.fileName,
+      );
+    } catch (e) {
+      // No existing user copy found
+      return null;
+    }
+  }
+
+  // Helper method to get completed books count
+  int get completedBooksCount => _books.where((book) => !book.isAssetBook && book.progress >= 1.0).length;
+  
+  // Helper method to update reading stats in profile
+  Future<void> _updateReadingStats() async {
+    if (_userProfileProvider != null) {
+      final completedCount = completedBooksCount;
+      debugPrint('Updating reading stats: $completedCount completed books');
+      await _userProfileProvider!.updateReadingStats(
+        booksCompleted: completedCount,
+      );
     }
   }
 

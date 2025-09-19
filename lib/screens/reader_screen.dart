@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import '../providers/book_provider.dart';
+import '../providers/theme_provider.dart';
 import '../models/book.dart';
 import '../widgets/text_reader.dart';
+import '../widgets/themed_background.dart';
 
 class ReaderScreen extends StatefulWidget {
   final Book book;
@@ -125,24 +127,42 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _isFullScreen
-          ? null
-          : AppBar(
-              title: Text(
-                _book.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              actions: [
-                IconButton(
-                  onPressed: _toggleFullScreen,
-                  icon: const Icon(Icons.fullscreen),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Scaffold(
+          appBar: _isFullScreen
+              ? null
+              : AppBar(
+                  title: Text(
+                    _book.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: themeProvider.currentFontFamily,
+                    ),
+                  ),
+                  flexibleSpace: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: themeProvider.currentGradient,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      onPressed: _toggleFullScreen,
+                      icon: const Icon(Icons.fullscreen),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-      body: _buildReaderBody(),
-      bottomNavigationBar: _isFullScreen ? null : _buildBottomBar(),
+          body: ThemedBackground(
+            child: _buildReaderBody(),
+          ),
+          bottomNavigationBar: _isFullScreen ? null : _buildBottomBar(),
+        );
+      },
     );
   }
 
@@ -237,37 +257,79 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   Widget _buildBottomBar() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border(
-          top: BorderSide(
-            color: Colors.grey[300]!,
-            width: 1,
-          ),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text('Page $_currentPage of $_totalPages'),
-              const Spacer(),
-              Text('${(_book.progress * 100).toInt()}%'),
-            ],
-          ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: _book.progress,
-            backgroundColor: Colors.grey[300],
-            valueColor: AlwaysStoppedAnimation<Color>(
-              Theme.of(context).primaryColor,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                themeProvider.currentGradient[0].withOpacity(0.1),
+                themeProvider.currentGradient[1].withOpacity(0.05),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            border: Border(
+              top: BorderSide(
+                color: themeProvider.currentGradient[0].withOpacity(0.3),
+                width: 2,
+              ),
             ),
           ),
-        ],
-      ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Page $_currentPage of $_totalPages',
+                    style: TextStyle(
+                      fontFamily: themeProvider.currentFontFamily,
+                      fontWeight: FontWeight.w600,
+                      color: themeProvider.isDarkMode 
+                          ? Colors.white 
+                          : themeProvider.currentGradient[0],
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: themeProvider.currentGradient.take(2).toList(),
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      '${(_book.progress * 100).toInt()}%',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: LinearProgressIndicator(
+                  value: _book.progress,
+                  minHeight: 8,
+                  backgroundColor: themeProvider.isDarkMode 
+                      ? Colors.grey[700] 
+                      : Colors.grey[300],
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    themeProvider.currentGradient[0],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

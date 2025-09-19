@@ -12,6 +12,7 @@ class Book {
   final double progress;
   final bool isFavorite;
   final int readingTimeMinutes;
+  final bool isAssetBook;
 
   Book({
     required this.id,
@@ -27,6 +28,7 @@ class Book {
     this.progress = 0.0,
     this.isFavorite = false,
     this.readingTimeMinutes = 0,
+    this.isAssetBook = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -44,27 +46,53 @@ class Book {
       'progress': progress,
       'isFavorite': isFavorite,
       'readingTimeMinutes': readingTimeMinutes,
+      'isAssetBook': isAssetBook,
     };
   }
 
   factory Book.fromMap(Map<String, dynamic> map) {
     return Book(
-      id: map['id'] ?? '',
-      title: map['title'] ?? '',
-      author: map['author'] ?? '',
-      filePath: map['filePath'] ?? '',
-      fileName: map['fileName'] ?? '',
-      fileType: map['fileType'] ?? '',
-      totalPages: map['totalPages'] ?? 0,
-      currentPage: map['currentPage'] ?? 0,
-      dateAdded: DateTime.fromMillisecondsSinceEpoch(map['dateAdded'] ?? 0),
+      id: map['id']?.toString() ?? '',
+      title: map['title']?.toString() ?? '',
+      author: map['author']?.toString() ?? '',
+      filePath: map['filePath']?.toString() ?? '',
+      fileName: map['fileName']?.toString() ?? '',
+      fileType: map['fileType']?.toString() ?? '',
+      totalPages: _parseInt(map['totalPages']),
+      currentPage: _parseInt(map['currentPage']),
+      dateAdded: DateTime.fromMillisecondsSinceEpoch(_parseInt(map['dateAdded'])),
       lastRead: map['lastRead'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['lastRead'])
+          ? DateTime.fromMillisecondsSinceEpoch(_parseInt(map['lastRead']))
           : null,
-      progress: map['progress']?.toDouble() ?? 0.0,
-      isFavorite: map['isFavorite'] ?? false,
-      readingTimeMinutes: map['readingTimeMinutes'] ?? 0,
+      progress: _parseDouble(map['progress']),
+      isFavorite: _parseBool(map['isFavorite']),
+      readingTimeMinutes: _parseInt(map['readingTimeMinutes']),
+      isAssetBook: _parseBool(map['isAssetBook']),
     );
+  }
+
+  static int _parseInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    if (value is double) return value.toInt();
+    return 0;
+  }
+
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
+
+  static bool _parseBool(dynamic value) {
+    if (value == null) return false;
+    if (value is bool) return value;
+    if (value is String) return value.toLowerCase() == 'true';
+    if (value is int) return value != 0;
+    return false;
   }
 
   Book copyWith({
@@ -81,6 +109,7 @@ class Book {
     double? progress,
     bool? isFavorite,
     int? readingTimeMinutes,
+    bool? isAssetBook,
   }) {
     return Book(
       id: id ?? this.id,
@@ -96,6 +125,7 @@ class Book {
       progress: progress ?? this.progress,
       isFavorite: isFavorite ?? this.isFavorite,
       readingTimeMinutes: readingTimeMinutes ?? this.readingTimeMinutes,
+      isAssetBook: isAssetBook ?? this.isAssetBook,
     );
   }
 }

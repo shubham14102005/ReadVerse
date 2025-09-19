@@ -1,0 +1,19 @@
+Welcome to ReadVerse!
+==================
+
+ReadVerse is your personal digital library for PDF and EPUB books.
+
+Getting Started:
+1. Add books by tapping the "+" button (when available)
+2. Tap on any book to start reading
+3. Use the heart icon to mark books as favorites
+4. Track your reading progress automatically
+
+Features:
+- Beautiful card-based book display
+- Reading progress tracking
+- Favorite books management
+- Dark and light themes
+- Cloud sync with Firebase
+
+Enjoy your reading journey with ReadVerse!

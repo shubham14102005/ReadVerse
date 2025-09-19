@@ -1,40 +1,54 @@
 {
   "books": [
     {
-      "id": "book_1",
-      "title": "The Art of Programming",
-      "author": "Code Master",
-      "fileName": "programming_guide.txt",
+      "id": "sample_1",
+      "title": "Getting Started Guide",
+      "author": "ReadVerse Team",
+      "fileName": "getting_started.txt",
       "fileType": "txt",
-      "totalPages": 150,
-      "description": "A comprehensive guide to programming principles and best practices.",
-      "category": "Technology",
-      "publishedYear": 2023,
-      "language": "English"
+      "totalPages": 5,
+      "description": "A quick guide to get you started with ReadVerse",
+      "category": "Guide"
     },
     {
-      "id": "book_2", 
-      "title": "Digital Photography Basics",
-      "author": "Photo Pro",
-      "fileName": "photography_basics.txt",
+      "id": "dummy_1",
+      "title": "The Great Adventure",
+      "author": "John Smith",
+      "fileName": "dummy_book_1.txt",
       "fileType": "txt",
-      "totalPages": 120,
-      "description": "Learn the fundamentals of digital photography, from composition to editing.",
-      "category": "Arts",
-      "publishedYear": 2022,
-      "language": "English"
+      "totalPages": 250,
+      "description": "An exciting adventure story",
+      "category": "Adventure"
     },
     {
-      "id": "book_3",
-      "title": "Healthy Living Guide",
-      "author": "Dr. Wellness",
-      "fileName": "healthy_living.txt", 
+      "id": "dummy_2",
+      "title": "Science Explained",
+      "author": "Dr. Jane Doe",
+      "fileName": "dummy_book_2.txt",
       "fileType": "txt",
-      "totalPages": 200,
-      "description": "A complete guide to maintaining a healthy lifestyle through diet and exercise.",
-      "category": "Health",
-      "publishedYear": 2023,
-      "language": "English"
+      "totalPages": 180,
+      "description": "Understanding modern science",
+      "category": "Science"
+    },
+    {
+      "id": "dummy_3",
+      "title": "Cooking Mastery",
+      "author": "Chef Mike",
+      "fileName": "dummy_book_3.txt",
+      "fileType": "txt",
+      "totalPages": 320,
+      "description": "Master the art of cooking",
+      "category": "Cooking"
+    },
+    {
+      "id": "dummy_4",
+      "title": "History Chronicles",
+      "author": "Prof. Sarah Wilson",
+      "fileName": "dummy_book_4.txt",
+      "fileType": "txt",
+      "totalPages": 420,
+      "description": "Chronicles of world history",
+      "category": "History"
     }
   ]
 }

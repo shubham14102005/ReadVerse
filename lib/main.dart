@@ -36,10 +36,16 @@ class ReadVerseApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => BookProvider()),
+        ChangeNotifierProvider(create: (_) => UserProfileProvider()),
+        ChangeNotifierProxyProvider<UserProfileProvider, BookProvider>(
+          create: (_) => BookProvider(),
+          update: (_, userProfileProvider, bookProvider) {
+            bookProvider?.setUserProfileProvider(userProfileProvider);
+            return bookProvider ?? BookProvider()..setUserProfileProvider(userProfileProvider);
+          },
+        ),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => UserProfileProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

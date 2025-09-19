@@ -28,19 +28,50 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(
-              Icons.menu_book,
-              color: Colors.white,
-              size: 28,
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    // Fallback to icon if image fails to load
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.menu_book,
+                        color: Theme.of(context).primaryColor,
+                        size: 24,
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
-            SizedBox(width: 8),
-            Text(
+            const SizedBox(width: 12),
+            const Text(
               'ReadVerse',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
+                color: Colors.white,
               ),
             ),
           ],
@@ -59,19 +90,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         elevation: 0,
         actions: [
-          // Add Book Button
-          Container(
-            margin: const EdgeInsets.only(right: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: IconButton(
-              onPressed: () => _addBook(),
-              icon: const Icon(Icons.add, color: Colors.white),
-              tooltip: 'Add Book',
-            ),
-          ),
           Consumer<AuthProvider>(
             builder: (context, authProvider, child) {
               return PopupMenuButton<String>(
@@ -193,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           return RefreshIndicator(
-            onRefresh: () => bookProvider.loadBooks(),
+            onRefresh: () => bookProvider.loadBooks(force: true),
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: bookProvider.books.length,

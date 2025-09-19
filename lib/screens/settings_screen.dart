@@ -77,49 +77,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
               return _buildListTile(
-                'Font Size',
-                'Adjust text size for reading',
-                Icons.text_fields,
-                themeProvider.fontSize,
-                () => _showFontSizeDialog(themeProvider),
+                'Font Style',
+                'Choose your preferred font',
+                Icons.font_download,
+                themeProvider.fontStyle,
+                () => _showFontStyleDialog(themeProvider),
               );
             },
           ),
 
           const Divider(),
 
-          // Reading Section
-          _buildSectionHeader('Reading'),
-          Consumer<UserProfileProvider>(
-            builder: (context, profileProvider, child) {
-              final goal = profileProvider.userProfile?.readingGoal ?? 12;
-              return _buildListTile(
-                'Reading Goals',
-                'Set your reading targets',
-                Icons.flag,
-                '$goal books this year',
-                () => _showReadingGoalsDialog(profileProvider),
-              );
-            },
-          ),
-
-          const Divider(),
-
-          // Account Section
-          _buildSectionHeader('Account'),
+          // Reading Features Section
+          _buildSectionHeader('Reading Features'),
           _buildListTile(
-            'Privacy',
-            'Control your privacy settings',
-            Icons.privacy_tip,
-            'Privacy options',
-            () => _showPrivacyDialog(),
+            'Reading Mode',
+            'Optimize for comfortable reading',
+            Icons.auto_stories,
+            'Enhanced experience',
+            () => _showReadingModeDialog(),
           ),
           _buildListTile(
-            'Data & Storage',
-            'Manage your data usage',
-            Icons.storage,
-            'Storage settings',
-            () => _showStorageDialog(),
+            'Text Highlighting',
+            'Enable text selection and highlights',
+            Icons.highlight_alt,
+            'Interactive reading',
+            () => _showHighlightingDialog(),
+          ),
+          _buildListTile(
+            'Reading Statistics',
+            'Track your reading progress',
+            Icons.analytics,
+            'Detailed insights',
+            () => _showReadingStatsDialog(),
           ),
 
           const Divider(),
@@ -192,11 +182,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.2 : 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -258,11 +248,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.2 : 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -303,14 +293,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
-                          color: isDestructive ? Colors.red : Colors.grey[800],
+                          color: isDestructive 
+                              ? Colors.red 
+                              : (Theme.of(context).brightness == Brightness.dark 
+                                  ? Colors.white 
+                                  : Colors.grey[800]),
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Theme.of(context).brightness == Brightness.dark 
+                              ? Colors.grey[400] 
+                              : Colors.grey[600],
                           fontSize: 14,
                         ),
                       ),
@@ -347,227 +343,293 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Choose Theme'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
+        title: const Row(
           children: [
-            _buildThemeOption('Blue', Colors.blue, themeProvider),
-            _buildThemeOption('Green', Colors.green, themeProvider),
-            _buildThemeOption('Purple', Colors.purple, themeProvider),
-            _buildThemeOption('Orange', Colors.orange, themeProvider),
-            _buildThemeOption('Red', Colors.red, themeProvider),
-            _buildThemeOption('Teal', Colors.teal, themeProvider),
+            Icon(Icons.palette, size: 24),
+            SizedBox(width: 8),
+            Text('Beautiful Themes'),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildThemeOption(
-      String name, Color color, ThemeProvider themeProvider) {
-    return ListTile(
-      leading: CircleAvatar(backgroundColor: color),
-      title: Text(name),
-      trailing:
-          themeProvider.primaryColor == color ? const Icon(Icons.check) : null,
-      onTap: () {
-        themeProvider.setPrimaryColor(color);
-        Navigator.of(context).pop();
-      },
-    );
-  }
-
-  String _getThemeColorName(Color color) {
-    if (color == Colors.blue) return 'Blue';
-    if (color == Colors.green) return 'Green';
-    if (color == Colors.purple) return 'Purple';
-    if (color == Colors.orange) return 'Orange';
-    if (color == Colors.red) return 'Red';
-    if (color == Colors.teal) return 'Teal';
-    return 'Custom';
-  }
-
-  void _showFontSizeDialog(ThemeProvider themeProvider) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Font Size'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildFontSizeOption('Small', themeProvider),
-            _buildFontSizeOption('Medium', themeProvider),
-            _buildFontSizeOption('Large', themeProvider),
-            _buildFontSizeOption('Extra Large', themeProvider),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFontSizeOption(String size, ThemeProvider themeProvider) {
-    return ListTile(
-      title: Text(size),
-      trailing: themeProvider.fontSize == size ? const Icon(Icons.check) : null,
-      onTap: () {
-        themeProvider.setFontSize(size);
-        Navigator.of(context).pop();
-      },
-    );
-  }
-
-  void _showReadingGoalsDialog(UserProfileProvider profileProvider) {
-    final TextEditingController goalController = TextEditingController(
-      text: (profileProvider.userProfile?.readingGoal ?? 12).toString(),
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Set Reading Goals'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('How many books do you want to read this year?'),
-            const SizedBox(height: 16),
-            TextField(
-              controller: goalController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Number of books',
-                border: OutlineInputBorder(),
-              ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: themeProvider.themes.keys.map((themeName) {
+                return _buildBeautifulThemeOption(themeName, themeProvider);
+              }).toList(),
             ),
-          ],
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.grey[700],
-            ),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (goalController.text.isNotEmpty) {
-                final goal = int.tryParse(goalController.text) ?? 12;
-                await profileProvider.updateProfile(readingGoal: goal);
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('Goal set: $goal books this year')),
-                  );
-                  Navigator.of(context).pop();
-                }
-              }
-            },
-            child: const Text('Set Goal'),
+            child: const Text('Done'),
           ),
         ],
       ),
     );
   }
 
-  void _showPrivacyDialog() {
-    bool dataCollection = true;
-    bool analytics = true;
-    bool crashReports = true;
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Privacy Settings'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SwitchListTile(
-                title: const Text('Data Collection'),
-                subtitle: const Text('Allow app to collect usage data'),
-                value: dataCollection,
-                onChanged: (value) => setState(() => dataCollection = value),
-                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                  if (states.contains(MaterialState.selected)) {
-                    return Theme.of(context).primaryColor;
-                  }
-                  return Colors.white;
-                }),
-              ),
-              SwitchListTile(
-                title: const Text('Analytics'),
-                subtitle: const Text('Help improve the app with analytics'),
-                value: analytics,
-                onChanged: (value) => setState(() => analytics = value),
-                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                  if (states.contains(MaterialState.selected)) {
-                    return Theme.of(context).primaryColor;
-                  }
-                  return Colors.white;
-                }),
-              ),
-              SwitchListTile(
-                title: const Text('Crash Reports'),
-                subtitle: const Text('Send crash reports to help fix bugs'),
-                value: crashReports,
-                onChanged: (value) => setState(() => crashReports = value),
-                thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                  if (states.contains(MaterialState.selected)) {
-                    return Theme.of(context).primaryColor;
-                  }
-                  return Colors.white;
-                }),
+  Widget _buildBeautifulThemeOption(String themeName, ThemeProvider themeProvider) {
+    final theme = themeProvider.themes[themeName]!;
+    final gradient = theme['gradient'] as List<Color>;
+    final isSelected = themeProvider.selectedTheme == themeName;
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: isSelected 
+            ? Border.all(color: Theme.of(context).primaryColor, width: 2)
+            : null,
+      ),
+      child: ListTile(
+        leading: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            gradient: LinearGradient(
+              colors: gradient,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: gradient[0].withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.grey[700],
-              ),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Privacy settings saved!')),
-                );
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save'),
-            ),
-          ],
+          child: _getThemeIcon(themeName),
         ),
+        title: Text(
+          themeName,
+          style: TextStyle(
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: isSelected ? Theme.of(context).primaryColor : null,
+          ),
+        ),
+        subtitle: Text(
+          theme['description'] ?? 'Beautiful theme',
+          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+        ),
+        trailing: isSelected 
+            ? Icon(Icons.check_circle, color: Theme.of(context).primaryColor)
+            : Icon(Icons.circle_outlined, color: Colors.grey[400]),
+        onTap: () {
+          themeProvider.setTheme(themeName);
+          Navigator.of(context).pop();
+        },
       ),
     );
   }
 
-  void _showStorageDialog() {
+  String _getThemeColorName(Color color) {
+    // Get theme name from theme provider based on selected theme
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    return themeProvider.selectedTheme;
+  }
+
+  Widget _getThemeIcon(String themeName) {
+    IconData iconData;
+    switch (themeName) {
+      case 'Ocean Breeze':
+        iconData = Icons.waves;
+        break;
+      case 'Forest Dream':
+        iconData = Icons.forest;
+        break;
+      case 'Sunset Glow':
+        iconData = Icons.wb_sunny;
+        break;
+      case 'Midnight Sky':
+        iconData = Icons.nightlight;
+        break;
+      case 'Rose Gold':
+        iconData = Icons.favorite;
+        break;
+      case 'Aurora':
+        iconData = Icons.auto_awesome;
+        break;
+      default:
+        iconData = Icons.palette;
+    }
+    return Icon(iconData, color: Colors.white, size: 24);
+  }
+
+  void _showFontStyleDialog(ThemeProvider themeProvider) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Data & Storage'),
-        content: Column(
+        title: const Row(
+          children: [
+            Icon(Icons.font_download, size: 24),
+            SizedBox(width: 8),
+            Text('Font Style'),
+          ],
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: themeProvider.fontStyles.keys.map((fontStyle) {
+                return _buildFontStyleOption(fontStyle, themeProvider);
+              }).toList(),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Done'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFontStyleOption(String fontStyleName, ThemeProvider themeProvider) {
+    final fontStyle = themeProvider.fontStyles[fontStyleName]!;
+    final isSelected = themeProvider.fontStyle == fontStyleName;
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: isSelected 
+            ? Border.all(color: Theme.of(context).primaryColor, width: 2)
+            : null,
+      ),
+      child: ListTile(
+        title: Text(
+          fontStyleName,
+          style: TextStyle(
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: isSelected ? Theme.of(context).primaryColor : null,
+            fontFamily: fontStyle['fontFamily'],
+            fontSize: 18,
+          ),
+        ),
+        subtitle: Text(
+          fontStyle['description'] ?? 'Beautiful font style',
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey[600],
+            fontFamily: fontStyle['fontFamily'],
+          ),
+        ),
+        trailing: isSelected 
+            ? Icon(Icons.check_circle, color: Theme.of(context).primaryColor)
+            : Icon(Icons.circle_outlined, color: Colors.grey[400]),
+        onTap: () {
+          themeProvider.setFontStyle(fontStyleName);
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
+
+  void _showReadingModeDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.auto_stories, size: 24),
+            SizedBox(width: 8),
+            Text('Reading Mode'),
+          ],
+        ),
+        content: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Storage Usage:',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            const Text('Books: 2.3 MB'),
-            const Text('Cache: 1.1 MB'),
-            const Text('Settings: 0.1 MB'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Cache cleared successfully!')),
-                );
-                Navigator.of(context).pop();
-              },
-              child: const Text('Clear Cache'),
-            ),
+            Text('🌿 Nature backgrounds adapt to your selected theme'),
+            SizedBox(height: 8),
+            Text('🌙 Night mode reduces blue light for comfortable reading'),
+            SizedBox(height: 8),
+            Text('📖 Fullscreen mode for distraction-free reading'),
+            SizedBox(height: 8),
+            Text('🎨 Reading section theme changes independently'),
+            SizedBox(height: 8),
+            Text('✨ Enhanced typography with perfect spacing'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Got it'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showHighlightingDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.highlight_alt, size: 24),
+            SizedBox(width: 8),
+            Text('Text Highlighting'),
+          ],
+        ),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('✨ Select any text to highlight important passages'),
+            SizedBox(height: 8),
+            Text('🎯 Tap the highlight button to enable highlight mode'),
+            SizedBox(height: 8),
+            Text('📝 Enhanced text selection with beautiful cursors'),
+            SizedBox(height: 8),
+            Text('💾 Highlights are saved for future reference'),
+            SizedBox(height: 8),
+            Text('🔍 Easy text search and navigation'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Awesome!'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showReadingStatsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.analytics, size: 24),
+            SizedBox(width: 8),
+            Text('Reading Statistics'),
+          ],
+        ),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('📊 Track your daily reading progress'),
+            SizedBox(height: 8),
+            Text('📈 See your reading goals and achievements'),
+            SizedBox(height: 8),
+            Text('⏱️ Monitor reading time and speed'),
+            SizedBox(height: 8),
+            Text('📚 Count books completed this year'),
+            SizedBox(height: 8),
+            Text('🎯 Set and achieve reading milestones'),
           ],
         ),
         actions: [
