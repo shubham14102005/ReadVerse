@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/book_provider.dart';
+import '../providers/book_provider_fixed.dart';
 import '../widgets/book_grid_tile.dart';
 import 'reader_screen.dart';
 
@@ -31,7 +31,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<dynamic> get _filteredBooks {
-    final bookProvider = Provider.of<BookProvider>(context, listen: false);
+    final bookProvider = Provider.of<BookProviderFixed>(context, listen: false);
     var books = bookProvider.books;
 
     // Filter by search query
@@ -142,7 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
           // Results
           Expanded(
-            child: Consumer<BookProvider>(
+            child: Consumer<BookProviderFixed>(
               builder: (context, bookProvider, child) {
                 final filteredBooks = _filteredBooks;
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import '../providers/book_provider.dart';
+import '../providers/book_provider_fixed.dart';
 import '../providers/theme_provider.dart';
 import '../models/book.dart';
 import '../widgets/text_reader.dart';
@@ -98,7 +98,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
         lastRead: DateTime.now(),
       );
 
-      Provider.of<BookProvider>(context, listen: false)
+      Provider.of<BookProviderFixed>(context, listen: false)
           .updateBookProgress(updatedBook, _currentPage);
 
       setState(() {

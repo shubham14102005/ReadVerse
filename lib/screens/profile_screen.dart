@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../providers/auth_provider.dart';
-import '../providers/book_provider.dart';
+import '../providers/book_provider_fixed.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/profile_stats_card.dart';
 import '../widgets/themed_background.dart';
@@ -60,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
       body: ThemedBackground(
-        child: Consumer3<AuthProvider, BookProvider, UserProfileProvider>(
+        child: Consumer3<AuthProvider, BookProviderFixed, UserProfileProvider>(
           builder: (context, authProvider, bookProvider, userProfileProvider, child) {
             if (authProvider.isLoading || userProfileProvider.isLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -224,7 +224,7 @@ class ProfileScreen extends StatelessWidget {
 
 
   Widget _buildReadingGoalsSection(BuildContext context, UserProfileProvider userProfileProvider) {
-    return Consumer<BookProvider>(
+    return Consumer<BookProviderFixed>(
       builder: (context, bookProvider, child) {
         // Get real-time completed books count
         final completedCount = bookProvider.completedBooksCount;

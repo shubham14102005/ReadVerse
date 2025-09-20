@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../providers/auth_provider.dart';
-import '../providers/book_provider.dart';
+import '../providers/book_provider_fixed.dart';
 import '../providers/navigation_provider.dart';
 import '../widgets/book_list_tile.dart';
 import 'reader_screen.dart';
@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<BookProvider>(context, listen: false).loadBooks();
+      Provider.of<BookProviderFixed>(context, listen: false).loadBooks();
     });
   }
 
@@ -198,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Consumer<BookProvider>(
+      body: Consumer<BookProviderFixed>(
         builder: (context, bookProvider, child) {
           if (bookProvider.isLoading) {
             return const Center(
@@ -228,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
-      floatingActionButton: Consumer<BookProvider>(
+      floatingActionButton: Consumer<BookProviderFixed>(
         builder: (context, bookProvider, child) {
           final favoritesCount = bookProvider.favoriteBooksCount;
           
@@ -403,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _addBook() {
-    Provider.of<BookProvider>(context, listen: false).addBook();
+    Provider.of<BookProviderFixed>(context, listen: false).addBook();
   }
 
   void _openFavorites() {

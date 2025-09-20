@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/book_provider.dart';
+import '../providers/book_provider_fixed.dart';
 import '../widgets/book_grid_tile.dart';
 import 'reader_screen.dart';
 
@@ -43,7 +43,7 @@ class FavoriteScreen extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: Consumer<BookProvider>(
+      body: Consumer<BookProviderFixed>(
         builder: (context, bookProvider, child) {
           final favoriteBooks = bookProvider.favoriteBooks;
 
