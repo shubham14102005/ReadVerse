@@ -54,14 +54,6 @@ class BookListTile extends StatelessWidget {
       width: 60,
       height: 80,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withValues(alpha: 0.7),
-          ],
-        ),
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
@@ -73,12 +65,20 @@ class BookListTile extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Center(
-            child: Icon(
-              book.fileType == 'pdf' ? Icons.picture_as_pdf : Icons.menu_book,
-              color: Colors.white,
-              size: 24,
-            ),
+          // Book Cover Image or Gradient Background
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: book.coverImagePath != null && book.coverImagePath!.isNotEmpty
+                ? Image.asset(
+                    book.coverImagePath!,
+                    width: 60,
+                    height: 80,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return _buildFallbackCover(context);
+                    },
+                  )
+                : _buildFallbackCover(context),
           ),
           // Progress indicator at bottom
           if (book.progress > 0)
@@ -115,6 +115,31 @@ class BookListTile extends StatelessWidget {
     );
   }
 
+  Widget _buildFallbackCover(BuildContext context) {
+    return Container(
+      width: 60,
+      height: 80,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor.withValues(alpha: 0.7),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: Icon(
+          book.fileType == 'pdf' ? Icons.picture_as_pdf : Icons.menu_book,
+          color: Colors.white,
+          size: 24,
+        ),
+      ),
+    );
+  }
+
   Widget _buildBookInfo(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,68 +166,51 @@ class BookListTile extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 8),
-        // Status and Date
-        Row(
-          children: [
-            // Date
-            Icon(
-              Icons.calendar_today,
-              size: 14,
-              color: Colors.grey[500],
-            ),
-            const SizedBox(width: 4),
-            Text(
-              _formatDate(book.dateAdded),
-              style: TextStyle(
-                color: Colors.grey[500],
-                fontSize: 12,
-              ),
-            ),
-            const Spacer(),
-            // Progress Badge
-            if (book.progress > 0)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
+        // Progress Badge
+        if (book.progress > 0)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: book.progress >= 1.0 
+                    ? Colors.green.withValues(alpha: 0.1)
+                    : Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
                   color: book.progress >= 1.0 
-                      ? Colors.green.withValues(alpha: 0.1)
-                      : Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
+                      ? Colors.green
+                      : Theme.of(context).primaryColor,
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    book.progress >= 1.0 ? Icons.check_circle : Icons.schedule,
+                    size: 12,
                     color: book.progress >= 1.0 
                         ? Colors.green
                         : Theme.of(context).primaryColor,
-                    width: 1,
                   ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      book.progress >= 1.0 ? Icons.check_circle : Icons.schedule,
-                      size: 12,
+                  const SizedBox(width: 4),
+                  Text(
+                    book.progress >= 1.0 
+                        ? 'Completed'
+                        : '${(book.progress * 100).toInt()}%',
+                    style: TextStyle(
                       color: book.progress >= 1.0 
                           ? Colors.green
                           : Theme.of(context).primaryColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(width: 2),
-                    Text(
-                      book.progress >= 1.0 
-                          ? 'Completed'
-                          : '${(book.progress * 100).toInt()}%',
-                      style: TextStyle(
-                        color: book.progress >= 1.0 
-                            ? Colors.green
-                            : Theme.of(context).primaryColor,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-          ],
-        ),
+            ),
+          ),
       ],
     );
   }
@@ -291,18 +299,4 @@ class BookListTile extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date).inDays;
-
-    if (difference == 0) {
-      return 'Today';
-    } else if (difference == 1) {
-      return 'Yesterday';
-    } else if (difference < 7) {
-      return '$difference days ago';
-    } else {
-      return '${date.day}/${date.month}/${date.year}';
-    }
-  }
 }

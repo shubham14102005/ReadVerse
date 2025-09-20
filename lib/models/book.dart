@@ -13,6 +13,7 @@ class Book {
   final bool isFavorite;
   final int readingTimeMinutes;
   final bool isAssetBook;
+  final String? coverImagePath;
 
   Book({
     required this.id,
@@ -29,6 +30,7 @@ class Book {
     this.isFavorite = false,
     this.readingTimeMinutes = 0,
     this.isAssetBook = false,
+    this.coverImagePath,
   });
 
   Map<String, dynamic> toMap() {
@@ -47,6 +49,7 @@ class Book {
       'isFavorite': isFavorite,
       'readingTimeMinutes': readingTimeMinutes,
       'isAssetBook': isAssetBook,
+      'coverImagePath': coverImagePath,
     };
   }
 
@@ -68,6 +71,7 @@ class Book {
       isFavorite: _parseBool(map['isFavorite']),
       readingTimeMinutes: _parseInt(map['readingTimeMinutes']),
       isAssetBook: _parseBool(map['isAssetBook']),
+      coverImagePath: map['coverImagePath']?.toString(),
     );
   }
 
@@ -110,6 +114,7 @@ class Book {
     bool? isFavorite,
     int? readingTimeMinutes,
     bool? isAssetBook,
+    String? coverImagePath,
   }) {
     return Book(
       id: id ?? this.id,
@@ -126,6 +131,7 @@ class Book {
       isFavorite: isFavorite ?? this.isFavorite,
       readingTimeMinutes: readingTimeMinutes ?? this.readingTimeMinutes,
       isAssetBook: isAssetBook ?? this.isAssetBook,
+      coverImagePath: coverImagePath ?? this.coverImagePath,
     );
   }
 }

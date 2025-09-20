@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ThemeProvider with ChangeNotifier {
-  bool _isDarkMode = false;
+  bool _isDarkMode = true;
   Color _primaryColor = Colors.deepPurple;
   String _fontStyle = 'Default';
   String _selectedTheme = 'Classic';
@@ -11,27 +11,18 @@ class ThemeProvider with ChangeNotifier {
   final Map<String, Map<String, dynamic>> _fontStyles = {
     'Default': {
       'fontFamily': null,
+      'fontSize': 16.0,
       'description': 'System default font',
-    },
-    'Elegant Serif': {
-      'fontFamily': 'serif',
-      'description': 'Classic book reading experience',
     },
     'Modern Sans': {
       'fontFamily': 'sans-serif',
+      'fontSize': 16.0,
       'description': 'Clean and modern',
-    },
-    'Monospace Code': {
-      'fontFamily': 'monospace',
-      'description': 'Fixed-width characters',
     },
     'Handwritten': {
       'fontFamily': 'cursive',
+      'fontSize': 16.0,
       'description': 'Personal and artistic',
-    },
-    'Fantasy': {
-      'fontFamily': 'fantasy',
-      'description': 'Decorative and unique',
     },
   };
 
@@ -39,43 +30,43 @@ class ThemeProvider with ChangeNotifier {
   final Map<String, Map<String, dynamic>> _themes = {
     'Classic': {
       'primaryColor': Colors.deepPurple,
-      'background': '',
+      'background': 'assets/images/classic_bg.jpg',
       'gradient': [Color(0xFF673AB7), Color(0xFF9C27B0)],
       'description': 'Classic elegance',
     },
     'Ocean Breeze': {
       'primaryColor': Colors.cyan,
-      'background': '',
+      'background': 'assets/images/ocean_bg.jpg',
       'gradient': [Color(0xFF00BCD4), Color(0xFF0097A7), Color(0xFF006064)],
       'description': 'Cool ocean vibes',
     },
     'Forest Dream': {
       'primaryColor': Colors.green,
-      'background': '',
+      'background': 'assets/images/forest_bg.jpg',
       'gradient': [Color(0xFF4CAF50), Color(0xFF2E7D32), Color(0xFF1B5E20)],
       'description': 'Natural forest feel',
     },
     'Sunset Glow': {
       'primaryColor': Colors.orange,
-      'background': '',
+      'background': 'assets/images/sunset_bg.jpg',
       'gradient': [Color(0xFFFF9800), Color(0xFFF57C00), Color(0xFFE65100)],
       'description': 'Warm sunset colors',
     },
     'Midnight Sky': {
       'primaryColor': Colors.indigo,
-      'background': '',
+      'background': 'assets/images/night_bg.jpg',
       'gradient': [Color(0xFF3F51B5), Color(0xFF283593), Color(0xFF1A237E)],
       'description': 'Deep night sky',
     },
     'Rose Gold': {
       'primaryColor': Color(0xFFE91E63),
-      'background': '',
+      'background': 'assets/images/rose_bg.jpg',
       'gradient': [Color(0xFFE91E63), Color(0xFFC2185B), Color(0xFF880E4F)],
       'description': 'Elegant rose tones',
     },
     'Aurora': {
       'primaryColor': Color(0xFF9C27B0),
-      'background': '',
+      'background': 'assets/images/aurora_bg.jpg',
       'gradient': [Color(0xFF9C27B0), Color(0xFF673AB7), Color(0xFF3F51B5)],
       'description': 'Magical aurora lights',
     },
@@ -90,6 +81,7 @@ class ThemeProvider with ChangeNotifier {
   Map<String, Map<String, dynamic>> get fontStyles => _fontStyles;
   List<Color> get currentGradient => _themes[_selectedTheme]?['gradient'] ?? [_primaryColor, _primaryColor];
   String? get currentFontFamily => _fontStyles[_fontStyle]?['fontFamily'];
+  double get currentFontSize => _fontStyles[_fontStyle]?['fontSize'] ?? 16.0;
 
   void toggleDarkMode() {
     _isDarkMode = !_isDarkMode;
@@ -188,30 +180,39 @@ class ThemeProvider with ChangeNotifier {
     return baseTextTheme.copyWith(
       headlineLarge: baseTextTheme.headlineLarge?.copyWith(
         fontFamily: currentFontFamily,
+        fontSize: currentFontSize + 16, // Larger for headlines
       ),
       headlineMedium: baseTextTheme.headlineMedium?.copyWith(
         fontFamily: currentFontFamily,
+        fontSize: currentFontSize + 12,
       ),
       headlineSmall: baseTextTheme.headlineSmall?.copyWith(
         fontFamily: currentFontFamily,
+        fontSize: currentFontSize + 8,
       ),
       titleLarge: baseTextTheme.titleLarge?.copyWith(
         fontFamily: currentFontFamily,
+        fontSize: currentFontSize + 6,
       ),
       titleMedium: baseTextTheme.titleMedium?.copyWith(
         fontFamily: currentFontFamily,
+        fontSize: currentFontSize + 2,
       ),
       titleSmall: baseTextTheme.titleSmall?.copyWith(
         fontFamily: currentFontFamily,
+        fontSize: currentFontSize,
       ),
       bodyLarge: baseTextTheme.bodyLarge?.copyWith(
         fontFamily: currentFontFamily,
+        fontSize: currentFontSize + 1,
       ),
       bodyMedium: baseTextTheme.bodyMedium?.copyWith(
         fontFamily: currentFontFamily,
+        fontSize: currentFontSize,
       ),
       bodySmall: baseTextTheme.bodySmall?.copyWith(
         fontFamily: currentFontFamily,
+        fontSize: currentFontSize - 2,
       ),
     );
   }

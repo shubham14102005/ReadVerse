@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../providers/auth_provider.dart';
 import '../providers/book_provider_fixed.dart';
 import '../providers/navigation_provider.dart';
+import '../providers/theme_provider.dart';
 import '../widgets/book_list_tile.dart';
 import 'reader_screen.dart';
 import 'favorite_screen.dart';
@@ -35,43 +36,40 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 32,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).primaryColor.withValues(alpha: 0.8),
+                  ],
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    // Fallback to icon if image fails to load
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        Icons.menu_book,
-                        color: Theme.of(context).primaryColor,
-                        size: 24,
-                      ),
-                    );
-                  },
-                ),
+              child: const Icon(
+                Icons.auto_stories_rounded,
+                color: Colors.white,
+                size: 20,
               ),
             ),
             const SizedBox(width: 12),
-            const Text(
+            Text(
               'ReadVerse',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
                 color: Colors.white,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    offset: const Offset(1, 1),
+                    blurRadius: 2,
+                  ),
+                ],
               ),
             ),
           ],
@@ -88,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        elevation: 0,
+        elevation: 4,
         actions: [
           Consumer<AuthProvider>(
             builder: (context, authProvider, child) {
@@ -198,30 +196,95 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Consumer<BookProviderFixed>(
-        builder: (context, bookProvider, child) {
-          if (bookProvider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (bookProvider.books.isEmpty) {
-            return _buildEmptyState();
-          }
-
-          return RefreshIndicator(
-            onRefresh: () => bookProvider.loadBooks(force: true),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: bookProvider.books.length,
-              itemBuilder: (context, index) {
-                final book = bookProvider.books[index];
-                return BookListTile(
-                  book: book,
-                  onTap: () => _openBook(book),
-                  onFavorite: () => bookProvider.toggleFavorite(book.id),
-                  onMarkCompleted: () => bookProvider.toggleCompletion(book.id),
+      body: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color(0xFF000000), // Pure black at top
+                  themeProvider.currentGradient[0].withValues(alpha: 0.3), // Theme color with low opacity
+                  const Color(0xFF0D1117), // Dark black-gray
+                  themeProvider.currentGradient.length > 1
+                      ? themeProvider.currentGradient[1].withValues(alpha: 0.2)
+                      : themeProvider.currentGradient[0].withValues(alpha: 0.2),
+                  const Color(0xFF000000), // Pure black at bottom
+                ],
+                stops: const [0.0, 0.3, 0.6, 0.8, 1.0],
+              ),
+            ),
+            child: Consumer<BookProviderFixed>(
+              builder: (context, bookProvider, child) {
+                if (bookProvider.isLoading) {
+                  return Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.white.withValues(alpha: 0.15),
+                            Colors.white.withValues(alpha: 0.05),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Loading your library...',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+          
+                if (bookProvider.books.isEmpty) {
+                  return _buildEmptyState();
+                }
+          
+                return RefreshIndicator(
+                  color: Theme.of(context).primaryColor,
+                  onRefresh: () => bookProvider.loadBooks(force: true),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: bookProvider.books.length,
+                    itemBuilder: (context, index) {
+                      final book = bookProvider.books[index];
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: BookListTile(
+                          book: book,
+                          onTap: () => _openBook(book),
+                          onFavorite: () => bookProvider.toggleFavorite(book.id),
+                          onMarkCompleted: () => bookProvider.toggleCompletion(book.id),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             ),
@@ -298,6 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
+
 
   Widget _buildEmptyState() {
     return Container(

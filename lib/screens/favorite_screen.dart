@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/book_provider_fixed.dart';
+import '../providers/theme_provider.dart';
 import '../widgets/book_grid_tile.dart';
 import 'reader_screen.dart';
 
@@ -43,36 +44,58 @@ class FavoriteScreen extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: Consumer<BookProviderFixed>(
-        builder: (context, bookProvider, child) {
-          final favoriteBooks = bookProvider.favoriteBooks;
-
-          if (bookProvider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (favoriteBooks.isEmpty) {
-            return _buildEmptyState(context);
-          }
-
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.7,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+      body: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color(0xFF000000), // Pure black at top
+                  themeProvider.currentGradient[0].withValues(alpha: 0.3), // Theme color with low opacity
+                  const Color(0xFF0D1117), // Dark black-gray
+                  themeProvider.currentGradient.length > 1
+                      ? themeProvider.currentGradient[1].withValues(alpha: 0.2)
+                      : themeProvider.currentGradient[0].withValues(alpha: 0.2),
+                  const Color(0xFF000000), // Pure black at bottom
+                ],
+                stops: const [0.0, 0.3, 0.6, 0.8, 1.0],
+              ),
             ),
-            itemCount: favoriteBooks.length,
-            itemBuilder: (context, index) {
-              final book = favoriteBooks[index];
-              return BookGridTile(
-                book: book,
-                onTap: () => _openBook(context, book),
-                onFavorite: () => bookProvider.toggleFavorite(book.id),
-                onMarkCompleted: () => bookProvider.toggleCompletion(book.id),
-              );
-            },
+            child: Consumer<BookProviderFixed>(
+              builder: (context, bookProvider, child) {
+                final favoriteBooks = bookProvider.favoriteBooks;
+
+                if (bookProvider.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (favoriteBooks.isEmpty) {
+                  return _buildEmptyState(context);
+                }
+
+                return GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.7,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: favoriteBooks.length,
+                  itemBuilder: (context, index) {
+                    final book = favoriteBooks[index];
+                    return BookGridTile(
+                      book: book,
+                      onTap: () => _openBook(context, book),
+                      onFavorite: () => bookProvider.toggleFavorite(book.id),
+                      onMarkCompleted: () => bookProvider.toggleCompletion(book.id),
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),

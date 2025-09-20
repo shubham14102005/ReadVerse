@@ -54,17 +54,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionHeader('Appearance'),
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
-              return _buildSwitchTile(
-                'Dark Mode',
-                'Switch to dark theme',
-                Icons.dark_mode,
-                themeProvider.isDarkMode,
-                (value) => themeProvider.setDarkMode(value),
-              );
-            },
-          ),
-          Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
               return _buildListTile(
                 'Theme Color',
                 'Choose your preferred theme',
@@ -646,34 +635,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Help & Support'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: const Row(
           children: [
-            Text('Frequently Asked Questions:',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('Q: How do I add books?'),
-            Text('A: Use the + button on the home screen to import books.'),
-            SizedBox(height: 8),
-            Text('Q: How do I track my reading progress?'),
-            Text('A: Open any book and use the progress slider at the bottom.'),
-            SizedBox(height: 8),
-            Text('Q: Can I change the theme?'),
-            Text('A: Yes, go to Settings > Appearance > Theme Color.'),
+            Icon(Icons.help_center, color: Colors.deepPurple),
+            SizedBox(width: 8),
+            Text('ReadVerse Help'),
           ],
+        ),
+        content: const SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('📖 Getting Started',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              SizedBox(height: 8),
+              Text('• Tap the ❤️ button on the home screen to view your favorites'),
+              Text('• Use the search page to find books by title or author'),
+              Text('• Filter books by completion status (Complete/Incomplete)'),
+              SizedBox(height: 16),
+              
+              Text('📚 Reading Books',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              SizedBox(height: 8),
+              Text('• Tap any book to start reading'),
+              Text('• Your reading progress is automatically saved'),
+              Text('• Mark books as favorites for quick access'),
+              SizedBox(height: 16),
+              
+              Text('🎨 Customization',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              SizedBox(height: 8),
+              Text('• Change theme colors in Settings > Theme Color'),
+              Text('• Adjust font styles for better reading experience'),
+              Text('• ReadVerse uses dark theme by default for comfortable reading'),
+              SizedBox(height: 16),
+              
+              Text('💡 Tips & Tricks',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              SizedBox(height: 8),
+              Text('• Complete books will show a green checkmark'),
+              Text('• Use search filters to find specific types of content'),
+              Text('• Reading statistics help track your progress'),
+            ],
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: const Text('Got it!'),
           ),
           ElevatedButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                    content: Text('Contact support: support@readverse.com')),
+                  content: Text('📧 Need more help? Contact: help@readverse.app'),
+                  duration: Duration(seconds: 4),
+                ),
               );
               Navigator.of(context).pop();
             },

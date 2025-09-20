@@ -143,27 +143,11 @@ class BookGridTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(
-                          Icons.calendar_today,
-                          size: 10,
-                          color: Colors.grey[500],
-                        ),
-                        const SizedBox(width: 2),
-                        Expanded(
-                          child: Text(
-                            _formatDate(book.dateAdded),
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 9,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
+                        const Spacer(),
                         if (book.progress > 0)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 1),
+                                horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: Theme.of(context)
                                   .primaryColor
@@ -174,7 +158,7 @@ class BookGridTile extends StatelessWidget {
                               '${(book.progress * 100).toInt()}%',
                               style: TextStyle(
                                 color: Theme.of(context).primaryColor,
-                                fontSize: 9,
+                                fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -242,18 +226,4 @@ class BookGridTile extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date).inDays;
-
-    if (difference == 0) {
-      return 'Today';
-    } else if (difference == 1) {
-      return 'Yesterday';
-    } else if (difference < 7) {
-      return '$difference days ago';
-    } else {
-      return '${date.day}/${date.month}/${date.year}';
-    }
-  }
 }

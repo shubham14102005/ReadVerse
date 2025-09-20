@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../providers/auth_provider.dart';
 import '../providers/book_provider_fixed.dart';
 import '../providers/user_profile_provider.dart';
+import '../providers/theme_provider.dart';
 import '../widgets/profile_stats_card.dart';
-import '../widgets/themed_background.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -59,32 +59,52 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ThemedBackground(
-        child: Consumer3<AuthProvider, BookProviderFixed, UserProfileProvider>(
-          builder: (context, authProvider, bookProvider, userProfileProvider, child) {
-            if (authProvider.isLoading || userProfileProvider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  // Profile Header
-                  _buildProfileHeader(context, authProvider, userProfileProvider),
-                  const SizedBox(height: 24),
-
-                  // Profile Stats
-                  ProfileStatsCard(books: bookProvider.books),
-                  const SizedBox(height: 24),
-
-                  // Reading Goals
-                  _buildReadingGoalsSection(context, userProfileProvider),
+      body: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color(0xFF000000), // Pure black at top
+                  themeProvider.currentGradient[0].withValues(alpha: 0.3), // Theme color with low opacity
+                  const Color(0xFF0D1117), // Dark black-gray
+                  themeProvider.currentGradient.length > 1
+                      ? themeProvider.currentGradient[1].withValues(alpha: 0.2)
+                      : themeProvider.currentGradient[0].withValues(alpha: 0.2),
+                  const Color(0xFF000000), // Pure black at bottom
                 ],
+                stops: const [0.0, 0.3, 0.6, 0.8, 1.0],
               ),
-            );
-          },
-        ),
+            ),
+            child: Consumer3<AuthProvider, BookProviderFixed, UserProfileProvider>(
+              builder: (context, authProvider, bookProvider, userProfileProvider, child) {
+                if (authProvider.isLoading || userProfileProvider.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      // Profile Header
+                      _buildProfileHeader(context, authProvider, userProfileProvider),
+                      const SizedBox(height: 24),
+
+                      // Profile Stats
+                      ProfileStatsCard(books: bookProvider.books),
+                      const SizedBox(height: 24),
+
+                      // Reading Goals
+                      _buildReadingGoalsSection(context, userProfileProvider),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _editProfile(context),
@@ -100,11 +120,29 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildProfileHeader(BuildContext context, AuthProvider authProvider, UserProfileProvider userProfileProvider) {
-    return ThemedGradientContainer(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      padding: const EdgeInsets.all(20),
-      borderRadius: BorderRadius.circular(20),
-      child: Row(
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              colors: themeProvider.currentGradient.length >= 2
+                  ? [themeProvider.currentGradient[0], themeProvider.currentGradient[1]]
+                  : [themeProvider.currentGradient[0], themeProvider.currentGradient[0].withValues(alpha: 0.8)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: themeProvider.currentGradient[0].withValues(alpha: 0.3),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Row(
         children: [
           Container(
             decoration: BoxDecoration(
@@ -218,7 +256,9 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -231,9 +271,21 @@ class ProfileScreen extends StatelessWidget {
         final goalCount = userProfileProvider.userProfile?.readingGoal ?? 12;
         final progressValue = goalCount > 0 ? (completedCount / goalCount).clamp(0.0, 1.0) : 0.0;
         
-        return ThemedCard(
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8),
           padding: const EdgeInsets.all(20),
-            child: Column(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.2 : 0.1),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -334,7 +386,7 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               ],
-            ),
+          ),
         );
       },
     );
