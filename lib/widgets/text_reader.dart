@@ -22,7 +22,7 @@ class _TextReaderState extends State<TextReader> {
   String _content = '';
   bool _isLoading = true;
   double _fontSize = 16.0;
-  String _readingTheme = 'Default';
+  String _readingTheme = 'Dark';
   bool _isFullScreen = false;
   
   // Page navigation
@@ -33,15 +33,15 @@ class _TextReaderState extends State<TextReader> {
   List<ScrollController> _scrollControllers = [];
 
   final Map<String, Map<String, dynamic>> _readingThemes = {
-    'Default': {
-      'backgroundColor': null, // Will use app theme
-      'textColor': null, // Will use app theme
-      'description': 'Follow app theme',
+    'Dark': {
+      'backgroundColor': Color(0xFF1E1E1E), // Modern dark background
+      'textColor': Color(0xFFE8E8E8), // Soft white text
+      'description': 'Dark theme for comfortable reading',
     },
     'Night': {
-      'backgroundColor': Color(0xFF1A1A1A),
-      'textColor': Color(0xFF4A9EFF),
-      'description': 'Blue light filtered - Easy on eyes',
+      'backgroundColor': Color(0xFF0A0A0A), // Deep black background
+      'textColor': Color(0xFF4FC3F7), // Soft blue text - easy on eyes
+      'description': 'Night mode with blue light reduction',
     },
   };
 

@@ -19,6 +19,18 @@ class UserProfileProvider with ChangeNotifier {
 
   UserProfileProvider() {
     loadUserProfile();
+    
+    // Listen to authentication state changes
+    _auth.authStateChanges().listen((User? user) {
+      if (user != null) {
+        // User signed in, load/refresh profile
+        loadUserProfile();
+      } else {
+        // User signed out, clear profile
+        _userProfile = null;
+        notifyListeners();
+      }
+    });
   }
 
   Future<void> loadUserProfile() async {
@@ -56,7 +68,7 @@ class UserProfileProvider with ChangeNotifier {
       if (doc.exists) {
         _userProfile = UserProfile.fromMap(doc.data()!);
       } else {
-        // Create default profile
+        // Create default profile using Firebase Auth user data
         _userProfile = _createDefaultProfile(user);
         await _saveProfileToFirestore();
       }
@@ -89,11 +101,23 @@ class UserProfileProvider with ChangeNotifier {
   }
 
   UserProfile _createDefaultProfile(User user) {
+    // Get the most up-to-date user data from current user instance
+    final currentUser = _auth.currentUser;
+    final displayName = currentUser?.displayName ?? user.displayName ?? user.email?.split('@')[0] ?? 'User';
+    final email = currentUser?.email ?? user.email ?? '';
+    final joinDate = user.metadata.creationTime ?? DateTime.now();
+    
+    print('Creating default profile for user: $displayName, $email'); // Debug log
+    
     return UserProfile(
       userId: user.uid,
-      displayName: user.displayName ?? user.email?.split('@')[0] ?? 'User',
-      email: user.email ?? '',
-      joinDate: user.metadata.creationTime ?? DateTime.now(),
+      displayName: displayName,
+      email: email,
+      joinDate: joinDate,
+      readingGoal: 12,
+      booksCompletedThisYear: 0,
+      totalReadingTimeMinutes: 0,
+      settings: {},
     );
   }
 
@@ -114,6 +138,13 @@ class UserProfileProvider with ChangeNotifier {
       );
 
       if (_auth.currentUser != null) {
+        // If display name is being updated, also update Firebase user
+        if (displayName != null && displayName.isNotEmpty) {
+          await _auth.currentUser!.updateDisplayName(displayName);
+          await _auth.currentUser!.reload();
+          print('Updated Firebase user displayName to: $displayName'); // Debug log
+        }
+        
         await _saveProfileToFirestore();
       } else {
         await _saveProfileToLocal();

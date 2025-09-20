@@ -29,13 +29,22 @@ class BookProvider with ChangeNotifier {
     _userProfileProvider = userProfileProvider;
   }
 
+  String? _currentUserId;
+  
   BookProvider() {
     // Listen to auth state changes and reload books accordingly
     _auth.authStateChanges().listen((user) {
-      debugPrint('Auth state changed: ${user != null ? 'logged in' : 'logged out'}');
-      // Force reload when auth state changes
-      _booksLoaded = false;
-      loadBooks(force: true);
+      final newUserId = user?.uid;
+      
+      // Only reload if the user actually changed (not just a token refresh)
+      if (_currentUserId != newUserId) {
+        debugPrint('Auth state changed: ${user != null ? 'logged in' : 'logged out'}');
+        _currentUserId = newUserId;
+        
+        // Force reload when auth state changes
+        _booksLoaded = false;
+        loadBooks(force: true);
+      }
     });
   }
 
@@ -339,7 +348,7 @@ class BookProvider with ChangeNotifier {
           final existingUserCopy = _findUserCopyOfAsset(book);
           
           if (existingUserCopy != null) {
-            // Update existing user copy
+            // Update existing user copy only - don't create duplicates
             final existingIndex = _books.indexWhere((b) => b.id == existingUserCopy.id);
             if (existingIndex != -1) {
               final updatedUserCopy = existingUserCopy.copyWith(
@@ -358,25 +367,27 @@ class BookProvider with ChangeNotifier {
               debugPrint('Updated existing user copy favorite status: ${book.title}');
             }
           } else {
-            // Create a new user copy of the asset book
-            final userCopy = book.copyWith(
-              id: DateTime.now().millisecondsSinceEpoch.toString(),
-              isAssetBook: false,
-              isFavorite: !book.isFavorite,
-              dateAdded: DateTime.now(),
-            );
-            
-            // Add the user copy to the list
-            _books.insert(index + 1, userCopy);
-            
-            // Save the user copy
-            if (_auth.currentUser != null) {
-              await _saveBookToFirestore(userCopy);
-            } else {
-              await _saveBooksToLocal();
+            // Only create user copy if it doesn't exist AND the favorite status is being set to true
+            if (!book.isFavorite) {  // Only create when marking as favorite
+              final userCopy = book.copyWith(
+                id: '${book.id}_user_copy',  // Consistent ID to prevent duplicates
+                isAssetBook: false,
+                isFavorite: true,
+                dateAdded: DateTime.now(),
+              );
+              
+              // Add the user copy to the list
+              _books.insert(index + 1, userCopy);
+              
+              // Save the user copy
+              if (_auth.currentUser != null) {
+                await _saveBookToFirestore(userCopy);
+              } else {
+                await _saveBooksToLocal();
+              }
+              
+              debugPrint('Created new user copy of asset book: ${book.title}');
             }
-            
-            debugPrint('Created new user copy of asset book: ${book.title}');
           }
         } else {
           // Normal user book - just update it
@@ -412,7 +423,7 @@ class BookProvider with ChangeNotifier {
           final existingUserCopy = _findUserCopyOfAsset(book);
           
           if (existingUserCopy != null) {
-            // Update existing user copy
+            // Update existing user copy only - don't create duplicates
             final existingIndex = _books.indexWhere((b) => b.id == existingUserCopy.id);
             if (existingIndex != -1) {
               final newProgress = existingUserCopy.progress >= 1.0 ? 0.0 : 1.0;
@@ -437,31 +448,32 @@ class BookProvider with ChangeNotifier {
               await _updateReadingStats();
             }
           } else {
-            // Create a new user copy of the asset book
-            final newProgress = book.progress >= 1.0 ? 0.0 : 1.0;
-            final userCopy = book.copyWith(
-              id: DateTime.now().millisecondsSinceEpoch.toString(),
-              isAssetBook: false,
-              progress: newProgress,
-              currentPage: newProgress >= 1.0 ? book.totalPages : 0,
-              lastRead: DateTime.now(),
-              dateAdded: DateTime.now(),
-            );
-            
-            // Add the user copy to the list
-            _books.insert(index + 1, userCopy);
-            
-            // Save the user copy
-            if (_auth.currentUser != null) {
-              await _saveBookToFirestore(userCopy);
-            } else {
-              await _saveBooksToLocal();
+            // Only create user copy if it doesn't exist AND the completion status is being changed
+            if (book.progress < 1.0) {  // Only create when marking as completed
+              final userCopy = book.copyWith(
+                id: '${book.id}_user_copy',  // Consistent ID to prevent duplicates
+                isAssetBook: false,
+                progress: 1.0,
+                currentPage: book.totalPages,
+                lastRead: DateTime.now(),
+                dateAdded: DateTime.now(),
+              );
+              
+              // Add the user copy to the list
+              _books.insert(index + 1, userCopy);
+              
+              // Save the user copy
+              if (_auth.currentUser != null) {
+                await _saveBookToFirestore(userCopy);
+              } else {
+                await _saveBooksToLocal();
+              }
+              
+              debugPrint('Created new user copy of asset book for completion: ${book.title}');
+              
+              // Update reading stats
+              await _updateReadingStats();
             }
-            
-            debugPrint('Created new user copy of asset book for completion: ${book.title}');
-            
-            // Update reading stats
-            await _updateReadingStats();
           }
         } else {
           // Normal user book - just update it

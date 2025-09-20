@@ -66,6 +66,10 @@ class AuthProvider with ChangeNotifier {
 
       // Update display name
       await _user?.updateDisplayName(displayName);
+      
+      // Reload user to get updated data
+      await _user?.reload();
+      _user = _auth.currentUser;
 
       // Create user document in Firestore
       await _firestore.collection('users').doc(_user!.uid).set({
@@ -74,6 +78,8 @@ class AuthProvider with ChangeNotifier {
         'createdAt': FieldValue.serverTimestamp(),
         'lastLogin': FieldValue.serverTimestamp(),
       });
+      
+      print('User created successfully: ${_user?.displayName}, ${_user?.email}'); // Debug log
 
       _isLoading = false;
       notifyListeners();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'main_navigation.dart';
@@ -18,6 +19,8 @@ class _AuthScreenState extends State<AuthScreen>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
+  bool _isSignInPasswordVisible = false;
+  bool _isSignUpPasswordVisible = false;
 
   @override
   void initState() {
@@ -43,10 +46,12 @@ class _AuthScreenState extends State<AuthScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF667eea),
-              Color(0xFF764ba2),
-              Color(0xFFf093fb),
+              Color(0xFF1a1a2e), // Deep dark blue
+              Color(0xFF16213e), // Rich navy
+              Color(0xFF0f3460), // Dark blue
+              Color(0xFF533483), // Purple accent
             ],
+            stops: [0.0, 0.3, 0.7, 1.0],
           ),
         ),
         child: SafeArea(
@@ -55,108 +60,162 @@ class _AuthScreenState extends State<AuthScreen>
               children: [
                 const SizedBox(height: 40),
                 // Logo and Title Section
-                Container(
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 1200),
+                  curve: Curves.easeOutBack,
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.all(28),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                             colors: [
-                              Colors.white.withValues(alpha: 0.3),
+                              Colors.white.withValues(alpha: 0.25),
                               Colors.white.withValues(alpha: 0.1),
+                              Colors.purple.withValues(alpha: 0.1),
                             ],
                           ),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 30,
-                              offset: const Offset(0, 15),
+                              color: Colors.white.withValues(alpha: 0.1),
+                              blurRadius: 20,
+                              offset: const Offset(-5, -5),
+                            ),
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 25,
+                              offset: const Offset(10, 15),
                             ),
                           ],
                         ),
                         child: const Icon(
-                          Icons.menu_book_rounded,
-                          size: 70,
+                          Icons.auto_stories_rounded,
+                          size: 80,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 32),
-                      Text(
-                        'ReadVerse',
-                        style:
-                            Theme.of(context).textTheme.headlineLarge?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 36,
-                                  letterSpacing: 1.2,
-                                ),
+                      const SizedBox(height: 36),
+                      ShaderMask(
+                        shaderCallback: (bounds) => const LinearGradient(
+                          colors: [
+                            Colors.white,
+                            Color(0xFFF0F0F0),
+                            Color(0xFFE0E0FF),
+                          ],
+                        ).createShader(bounds),
+                        child: Text(
+                          'ReadVerse',
+                          style:
+                              Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 42,
+                                    letterSpacing: 2.0,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black.withValues(alpha: 0.3),
+                                        offset: const Offset(2, 2),
+                                        blurRadius: 8,
+                                      ),
+                                    ],
+                                  ),
+                        ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 16),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 8),
+                            horizontal: 24, vertical: 10),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(20),
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.white.withValues(alpha: 0.15),
+                              Colors.white.withValues(alpha: 0.05),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(25),
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.3),
+                            color: Colors.white.withValues(alpha: 0.2),
                             width: 1,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Text(
-                          'Your Digital Library',
+                          '📚 Your Digital Reading Journey',
                           style:
                               Theme.of(context).textTheme.titleMedium?.copyWith(
                                     color: Colors.white,
                                     fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
                                   ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 30),
-                // Auth Form Container
+                const SizedBox(height: 40),
+                // Auth Form Container with glassmorphism effect
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.1),
+                        Colors.white.withValues(alpha: 0.05),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(32),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.15),
-                        blurRadius: 30,
-                        offset: const Offset(0, 15),
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 40,
+                        offset: const Offset(0, 20),
                       ),
                       BoxShadow(
                         color: Colors.white.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, -5),
+                        blurRadius: 15,
+                        offset: const Offset(0, -8),
                       ),
                     ],
                   ),
                   child: Column(
                     children: [
-                      // Custom Tab Bar
+                      // Custom Tab Bar with glassmorphism
                       Container(
-                        margin: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              Colors.grey[100]!,
-                              Colors.grey[50]!,
+                              Colors.white.withValues(alpha: 0.15),
+                              Colors.white.withValues(alpha: 0.08),
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.3),
+                            width: 1,
+                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
+                              color: Colors.black.withValues(alpha: 0.15),
+                              blurRadius: 15,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
@@ -167,26 +226,28 @@ class _AuthScreenState extends State<AuthScreen>
                               colors: [
                                 Color(0xFF667eea),
                                 Color(0xFF764ba2),
+                                Color(0xFF533483),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(25),
                             boxShadow: [
                               BoxShadow(
                                 color: const Color(0xFF667eea)
-                                    .withValues(alpha: 0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
+                                    .withValues(alpha: 0.4),
+                                blurRadius: 12,
+                                offset: const Offset(0, 3),
                               ),
                             ],
                           ),
                           labelColor: Colors.white,
-                          unselectedLabelColor: Colors.grey[600],
+                          unselectedLabelColor: Colors.white70,
                           labelStyle: const TextStyle(
                             fontWeight: FontWeight.w700,
-                            fontSize: 16,
+                            fontSize: 17,
+                            letterSpacing: 0.5,
                           ),
                           unselectedLabelStyle: const TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                             fontSize: 16,
                           ),
                           tabs: const [
@@ -196,7 +257,7 @@ class _AuthScreenState extends State<AuthScreen>
                         ),
                       ),
                       SizedBox(
-                        height: 450,
+                        height: 480,
                         child: TabBarView(
                           controller: _tabController,
                           children: [
@@ -219,41 +280,75 @@ class _AuthScreenState extends State<AuthScreen>
 
   Widget _buildSignInForm() {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(28),
       child: Form(
         key: _signInFormKey,
         child: Column(
           children: [
-            // Email Field
+            // Email Field with glassmorphism
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withValues(alpha: 0.2),
+                    Colors.white.withValues(alpha: 0.1),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.3),
+                  width: 1,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: TextFormField(
                 controller: _emailController,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
                 decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'Enter your email address',
-                  prefixIcon: const Icon(
-                    Icons.email_outlined,
-                    color: Color(0xFF667eea),
+                  labelText: 'Email Address',
+                  hintText: 'Enter your email',
+                  labelStyle: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  hintStyle: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.6),
+                  ),
+                  prefixIcon: Icon(
+                    Icons.email_rounded,
+                    color: Colors.white.withValues(alpha: 0.8),
+                    size: 22,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide.none,
                   ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(
+                      color: Colors.white.withValues(alpha: 0.5),
+                      width: 2,
+                    ),
+                  ),
                   filled: true,
-                  fillColor: Colors.grey[50],
+                  fillColor: Colors.transparent,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
+                    horizontal: 20,
+                    vertical: 18,
                   ),
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -268,40 +363,89 @@ class _AuthScreenState extends State<AuthScreen>
                 },
               ),
             ),
-            const SizedBox(height: 20),
-            // Password Field
+            const SizedBox(height: 24),
+            // Password Field with glassmorphism
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withValues(alpha: 0.2),
+                    Colors.white.withValues(alpha: 0.1),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.3),
+                  width: 1,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: TextFormField(
                 controller: _passwordController,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
                 decoration: InputDecoration(
                   labelText: 'Password',
                   hintText: 'Enter your password',
-                  prefixIcon: const Icon(
-                    Icons.lock_outline,
-                    color: Color(0xFF667eea),
+                  labelStyle: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  hintStyle: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.6),
+                  ),
+                  prefixIcon: Icon(
+                    Icons.lock_rounded,
+                    color: Colors.white.withValues(alpha: 0.8),
+                    size: 22,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      setState(() {
+                        _isSignInPasswordVisible = !_isSignInPasswordVisible;
+                      });
+                    },
+                    icon: Icon(
+                      _isSignInPasswordVisible 
+                        ? Icons.visibility_rounded 
+                        : Icons.visibility_off_rounded,
+                      color: Colors.white.withValues(alpha: 0.7),
+                      size: 22,
+                    ),
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide.none,
                   ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(
+                      color: Colors.white.withValues(alpha: 0.5),
+                      width: 2,
+                    ),
+                  ),
                   filled: true,
-                  fillColor: Colors.grey[50],
+                  fillColor: Colors.transparent,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
+                    horizontal: 20,
+                    vertical: 18,
                   ),
                 ),
-                obscureText: true,
+                obscureText: !_isSignInPasswordVisible,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your password';
@@ -313,64 +457,81 @@ class _AuthScreenState extends State<AuthScreen>
                 },
               ),
             ),
-            const SizedBox(height: 8),
-            // Forgot Password
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () => _handleForgotPassword(),
-                child: const Text(
-                  'Forgot Password?',
-                  style: TextStyle(
-                    color: Color(0xFF667eea),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Sign In Button
+            const SizedBox(height: 36),
+            // Enhanced Sign In Button
             Consumer<AuthProvider>(
               builder: (context, authProvider, child) {
-                return Container(
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
                   width: double.infinity,
-                  height: 50,
+                  height: 56,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                       colors: [
                         Color(0xFF667eea),
                         Color(0xFF764ba2),
+                        Color(0xFF533483),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF667eea).withValues(alpha: 0.3),
+                        color: const Color(0xFF667eea).withValues(alpha: 0.4),
+                        blurRadius: 15,
+                        offset: const Offset(0, 6),
+                      ),
+                      BoxShadow(
+                        color: Colors.white.withValues(alpha: 0.1),
                         blurRadius: 8,
-                        offset: const Offset(0, 4),
+                        offset: const Offset(0, -2),
                       ),
                     ],
                   ),
                   child: ElevatedButton(
                     onPressed: authProvider.isLoading
                         ? null
-                        : () => _handleSignIn(authProvider),
+                        : () {
+                            HapticFeedback.mediumImpact();
+                            _handleSignIn(authProvider);
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                     child: authProvider.isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Sign In',
-                            style: TextStyle(
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
                               color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
+                              strokeWidth: 2.5,
                             ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.login_rounded,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'Sign In',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 17,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                   ),
                 );
@@ -534,6 +695,17 @@ class _AuthScreenState extends State<AuthScreen>
                     Icons.lock_outline,
                     color: Color(0xFF667eea),
                   ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isSignUpPasswordVisible = !_isSignUpPasswordVisible;
+                      });
+                    },
+                    icon: Icon(
+                      _isSignUpPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.grey[600],
+                    ),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -545,7 +717,7 @@ class _AuthScreenState extends State<AuthScreen>
                     vertical: 16,
                   ),
                 ),
-                obscureText: true,
+                obscureText: !_isSignUpPasswordVisible,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your password';
@@ -675,6 +847,11 @@ class _AuthScreenState extends State<AuthScreen>
       );
 
       if (success && mounted) {
+        // Clear form fields after successful signup
+        _emailController.clear();
+        _passwordController.clear();
+        _nameController.clear();
+        
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const MainNavigation()),
         );
@@ -682,24 +859,4 @@ class _AuthScreenState extends State<AuthScreen>
     }
   }
 
-  Future<void> _handleForgotPassword() async {
-    final email = _emailController.text.trim();
-    if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your email first')),
-      );
-      return;
-    }
-
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await authProvider.resetPassword(email);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Password reset email sent. Check your inbox.'),
-        ),
-      );
-    }
-  }
 }
