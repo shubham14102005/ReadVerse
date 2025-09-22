@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider with ChangeNotifier {
   bool _isDarkMode = true;
@@ -83,13 +84,40 @@ class ThemeProvider with ChangeNotifier {
   String? get currentFontFamily => _fontStyles[_fontStyle]?['fontFamily'];
   double get currentFontSize => _fontStyles[_fontStyle]?['fontSize'] ?? 16.0;
 
+  // Initialize theme settings from SharedPreferences
+  Future<void> initializeThemeSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    _isDarkMode = prefs.getBool('isDarkMode') ?? true;
+    _fontStyle = prefs.getString('fontStyle') ?? 'Default';
+    _selectedTheme = prefs.getString('selectedTheme') ?? 'Classic';
+    
+    // Set theme-related properties based on saved theme
+    if (_themes.containsKey(_selectedTheme)) {
+      _primaryColor = _themes[_selectedTheme]!['primaryColor'];
+      _backgroundImage = _themes[_selectedTheme]!['background'] ?? '';
+    }
+    
+    notifyListeners();
+  }
+  
+  // Save theme settings to SharedPreferences
+  Future<void> _saveThemeSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', _isDarkMode);
+    await prefs.setString('fontStyle', _fontStyle);
+    await prefs.setString('selectedTheme', _selectedTheme);
+  }
+
   void toggleDarkMode() {
     _isDarkMode = !_isDarkMode;
+    _saveThemeSettings();
     notifyListeners();
   }
 
   void setDarkMode(bool value) {
     _isDarkMode = value;
+    _saveThemeSettings();
     notifyListeners();
   }
 
@@ -101,6 +129,7 @@ class ThemeProvider with ChangeNotifier {
   void setFontStyle(String style) {
     if (_fontStyles.containsKey(style)) {
       _fontStyle = style;
+      _saveThemeSettings(); // Save font style to storage
       notifyListeners();
     }
   }
@@ -110,6 +139,7 @@ class ThemeProvider with ChangeNotifier {
       _selectedTheme = themeName;
       _primaryColor = _themes[themeName]!['primaryColor'];
       _backgroundImage = _themes[themeName]!['background'] ?? '';
+      _saveThemeSettings(); // Save theme to storage
       notifyListeners();
     }
   }

@@ -631,9 +631,5 @@ class ProfileScreen extends StatelessWidget {
   }
 
 
-  double _calculateGoalProgress(userProfile) {
-    if (userProfile == null || userProfile.readingGoal == 0) return 0.0;
-    return (userProfile.booksCompletedThisYear / userProfile.readingGoal).clamp(0.0, 1.0);
-  }
 
 }

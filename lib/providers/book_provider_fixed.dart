@@ -17,14 +17,14 @@ class BookProviderFixed with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   UserProfileProvider? _userProfileProvider;
 
-  List<Book> _books = [];
+  final List<Book> _books = [];
   bool _isLoading = false;
   bool _booksLoaded = false;
   String? _errorMessage;
   String? _currentUserId;
   
   // HOTFIX: Track user interactions separately to prevent duplicates
-  Map<String, Map<String, dynamic>> _userInteractions = {};
+  final Map<String, Map<String, dynamic>> _userInteractions = {};
 
   List<Book> get books => _books;
   bool get isLoading => _isLoading;

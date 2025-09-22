@@ -39,7 +39,14 @@ class ReadVerseApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => BookProviderFixed()),
         ChangeNotifierProvider(create: (_) => UserProfileProvider()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(
+          create: (_) {
+            final themeProvider = ThemeProvider();
+            // Initialize theme settings from SharedPreferences
+            themeProvider.initializeThemeSettings();
+            return themeProvider;
+          },
+        ),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

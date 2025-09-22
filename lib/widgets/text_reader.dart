@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
-import '../widgets/themed_background.dart';
 
 class TextReader extends StatefulWidget {
   final String filePath;
@@ -19,7 +18,6 @@ class TextReader extends StatefulWidget {
 }
 
 class _TextReaderState extends State<TextReader> {
-  String _content = '';
   bool _isLoading = true;
   double _fontSize = 16.0;
   String _readingTheme = 'Dark';
@@ -30,7 +28,7 @@ class _TextReaderState extends State<TextReader> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
   final int _wordsPerPage = 300; // Approximate words per page
-  List<ScrollController> _scrollControllers = [];
+  final List<ScrollController> _scrollControllers = [];
 
   final Map<String, Map<String, dynamic>> _readingThemes = {
     'Dark': {
@@ -45,81 +43,6 @@ class _TextReaderState extends State<TextReader> {
     },
   };
 
-  // Nature-inspired gradients for different app themes
-  LinearGradient _getNatureGradient(String appTheme) {
-    switch (appTheme) {
-      case 'Ocean Breeze':
-        return LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF89CFF0), // Sky blue
-            Color(0xFF0077BE), // Ocean blue
-            Color(0xFF003F5C), // Deep ocean
-          ],
-        );
-      case 'Forest Dream':
-        return LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF90EE90), // Light green
-            Color(0xFF228B22), // Forest green
-            Color(0xFF013220), // Deep forest
-          ],
-        );
-      case 'Sunset Glow':
-        return LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFFFD700), // Golden
-            Color(0xFFFF8C00), // Dark orange
-            Color(0xFFFF4500), // Red orange
-          ],
-        );
-      case 'Midnight Sky':
-        return LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF191970), // Midnight blue
-            Color(0xFF000080), // Navy
-            Color(0xFF000033), // Very dark blue
-          ],
-        );
-      case 'Rose Gold':
-        return LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFFFC0CB), // Pink
-            Color(0xFFDB7093), // Pale violet red
-            Color(0xFF8B1538), // Dark red
-          ],
-        );
-      case 'Aurora':
-        return LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF9370DB), // Medium purple
-            Color(0xFF4B0082), // Indigo
-            Color(0xFF483D8B), // Dark slate blue
-          ],
-        );
-      default:
-        return LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFE6E6FA), // Lavender
-            Color(0xFF9370DB), // Medium purple
-            Color(0xFF663399), // Rebecca purple
-          ],
-        );
-    }
-  }
 
   @override
   void initState() {
@@ -132,12 +55,10 @@ class _TextReaderState extends State<TextReader> {
       final content = await rootBundle.loadString(widget.filePath);
       _splitIntoPages(content);
       setState(() {
-        _content = content;
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
-        _content = 'Error loading book content: $e';
         _isLoading = false;
       });
     }
@@ -200,16 +121,6 @@ class _TextReaderState extends State<TextReader> {
     } else {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
-  }
-
-  Color _getCurrentBackgroundColor(ThemeProvider themeProvider) {
-    final themeConfig = _readingThemes[_readingTheme]!;
-    if (themeConfig['backgroundColor'] != null) {
-      return themeConfig['backgroundColor'];
-    }
-    return themeProvider.isDarkMode 
-        ? const Color(0xFF121212)
-        : Colors.white;
   }
 
   Color _getCurrentTextColor(ThemeProvider themeProvider) {
@@ -519,7 +430,6 @@ class _TextReaderState extends State<TextReader> {
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
-        final readingBackgroundColor = _getCurrentBackgroundColor(themeProvider);
         final textColor = _getCurrentTextColor(themeProvider);
         
         return PopScope(
