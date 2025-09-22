@@ -139,9 +139,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**Shubham**
-- GitHub: [@shubham](https://github.com/shubham)
-- Email: shubham@readverse.app
+**Shubham && Deep **
 
 ## 🙏 Acknowledgments
 
