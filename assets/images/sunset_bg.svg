@@ -1,0 +1,53 @@
+<svg width="800" height="1200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sunsetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#F57C00;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#E65100;stop-opacity:0.6" />
+    </linearGradient>
+    <radialGradient id="sunGradient" cx="50%" cy="30%" r="40%">
+      <stop offset="0%" style="stop-color:#FFF3E0;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#FFB74D;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#FF9800;stop-opacity:0.2" />
+    </radialGradient>
+    <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFCC02;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#FF8F00;stop-opacity:0.3" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Base sunset gradient -->
+  <rect width="800" height="1200" fill="url(#sunsetGradient)"/>
+  
+  <!-- Sun disc -->
+  <circle cx="400" cy="300" r="80" fill="url(#sunGradient)" opacity="0.8"/>
+  
+  <!-- Sun rays -->
+  <path d="M400,100 L410,200 L400,220 L390,200 Z" fill="#FFF3E0" opacity="0.6"/>
+  <path d="M500,250 L420,260 L400,280 L480,270 Z" fill="#FFF3E0" opacity="0.5" transform="rotate(45 400 300)"/>
+  <path d="M300,250 L380,260 L400,280 L320,270 Z" fill="#FFF3E0" opacity="0.5" transform="rotate(-45 400 300)"/>
+  <path d="M400,400 L410,500 L400,520 L390,500 Z" fill="#FFF3E0" opacity="0.4"/>
+  <path d="M550,300 L420,310 L400,330 L530,320 Z" fill="#FFF3E0" opacity="0.5"/>
+  <path d="M250,300 L380,310 L400,330 L270,320 Z" fill="#FFF3E0" opacity="0.5"/>
+  
+  <!-- Cloud silhouettes -->
+  <ellipse cx="150" cy="200" rx="60" ry="25" fill="url(#cloudGradient)" opacity="0.7"/>
+  <ellipse cx="200" cy="190" rx="40" ry="20" fill="url(#cloudGradient)" opacity="0.6"/>
+  <ellipse cx="600" cy="180" rx="70" ry="30" fill="url(#cloudGradient)" opacity="0.5"/>
+  <ellipse cx="650" cy="170" rx="50" ry="25" fill="url(#cloudGradient)" opacity="0.6"/>
+  
+  <!-- Horizon mountains -->
+  <path d="M0,600 L100,500 L200,550 L300,450 L400,500 L500,400 L600,480 L700,420 L800,460 L800,1200 L0,1200 Z" fill="#BF360C" opacity="0.4"/>
+  
+  <!-- Atmospheric layers -->
+  <rect x="0" y="400" width="800" height="200" fill="url(#sunsetGradient)" opacity="0.3"/>
+  <rect x="0" y="600" width="800" height="200" fill="url(#sunsetGradient)" opacity="0.2"/>
+  
+  <!-- Sparkle effects -->
+  <circle cx="300" cy="150" r="3" fill="#FFF3E0" opacity="0.8"/>
+  <circle cx="500" cy="120" r="2" fill="#FFF3E0" opacity="0.7"/>
+  <circle cx="200" cy="400" r="2.5" fill="#FFB74D" opacity="0.6"/>
+  <circle cx="600" cy="380" r="2" fill="#FFB74D" opacity="0.5"/>
+  <circle cx="100" cy="350" r="3" fill="#FFF3E0" opacity="0.7"/>
+  <circle cx="700" cy="320" r="2.5" fill="#FFB74D" opacity="0.6"/>
+</svg>

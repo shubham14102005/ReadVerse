@@ -8,7 +8,8 @@
       "fileType": "txt",
       "totalPages": 5,
       "description": "A quick guide to get you started with ReadVerse",
-      "category": "Guide"
+      "category": "Guide",
+      "coverImage": "assets/images/book_covers/getting_started.svg"
     },
     {
       "id": "adventure_1",
@@ -18,7 +19,8 @@
       "fileType": "txt",
       "totalPages": 285,
       "description": "Join Marcus on an epic journey through uncharted territories filled with mystery, danger, and unexpected friendships.",
-      "category": "Adventure"
+      "category": "Adventure",
+      "coverImage": "assets/images/book_covers/adventure.svg"
     },
     {
       "id": "science_1",
@@ -28,7 +30,8 @@
       "fileType": "txt",
       "totalPages": 220,
       "description": "Explore the fascinating world of quantum physics and discover how it shapes our understanding of reality.",
-      "category": "Science"
+      "category": "Science",
+      "coverImage": "assets/images/book_covers/quantum.svg"
     },
     {
       "id": "cooking_1",
@@ -38,7 +41,8 @@
       "fileType": "txt",
       "totalPages": 340,
       "description": "Master the art of fine dining with traditional recipes and modern techniques from around the world.",
-      "category": "Cooking"
+      "category": "Cooking",
+      "coverImage": "assets/images/book_covers/cooking.svg"
     },
     {
       "id": "history_1",
@@ -48,7 +52,8 @@
       "fileType": "txt",
       "totalPages": 450,
       "description": "Journey through the rise and fall of great civilizations and the legendary figures who shaped our world.",
-      "category": "History"
+      "category": "History",
+      "coverImage": "assets/images/book_covers/history.svg"
     },
     {
       "id": "programming_1",
@@ -58,7 +63,8 @@
       "fileType": "txt",
       "totalPages": 380,
       "description": "From beginner to expert: master programming concepts, best practices, and advanced techniques.",
-      "category": "Technology"
+      "category": "Technology",
+      "coverImage": "assets/images/book_covers/programming.svg"
     },
     {
       "id": "health_1",
@@ -68,7 +74,8 @@
       "fileType": "txt",
       "totalPages": 290,
       "description": "Transform your life with science-backed strategies for optimal health, nutrition, and mental well-being.",
-      "category": "Health"
+      "category": "Health",
+      "coverImage": "assets/images/book_covers/wellness.svg"
     },
     {
       "id": "photography_1",
@@ -78,7 +85,8 @@
       "fileType": "txt",
       "totalPages": 260,
       "description": "Learn the art and science of photography, from composition basics to advanced lighting techniques.",
-      "category": "Arts"
+      "category": "Arts",
+      "coverImage": "assets/images/book_covers/photography.svg"
     },
     {
       "id": "mystery_1",
@@ -88,7 +96,8 @@
       "fileType": "txt",
       "totalPages": 320,
       "description": "Detective Catherine Moore faces her most challenging case yet in the fog-covered streets of Victorian London.",
-      "category": "Mystery"
+      "category": "Mystery",
+      "coverImage": "assets/images/book_covers/mystery.svg"
     },
     {
       "id": "romance_1",
@@ -98,7 +107,8 @@
       "fileType": "txt",
       "totalPages": 280,
       "description": "A timeless love story that spans generations, proving that true love knows no boundaries.",
-      "category": "Romance"
+      "category": "Romance",
+      "coverImage": "assets/images/book_covers/romance.svg"
     },
     {
       "id": "fantasy_1",
@@ -108,7 +118,8 @@
       "fileType": "txt",
       "totalPages": 420,
       "description": "In a world where dragons soar and magic flows, young Aria must discover her true power to save her kingdom.",
-      "category": "Fantasy"
+      "category": "Fantasy",
+      "coverImage": "assets/images/book_covers/fantasy.svg"
     },
     {
       "id": "business_1",
@@ -118,7 +129,8 @@
       "fileType": "txt",
       "totalPages": 310,
       "description": "Build successful businesses with proven strategies, innovative thinking, and leadership principles.",
-      "category": "Business"
+      "category": "Business",
+      "coverImage": "assets/images/book_covers/business.svg"
     }
   ]
 }

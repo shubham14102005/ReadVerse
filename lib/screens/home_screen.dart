@@ -6,6 +6,7 @@ import '../providers/book_provider_fixed.dart';
 import '../providers/navigation_provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/book_list_tile.dart';
+import '../widgets/themed_background.dart';
 import 'reader_screen.dart';
 import 'favorite_screen.dart';
 
@@ -196,26 +197,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  const Color(0xFF000000), // Pure black at top
-                  themeProvider.currentGradient[0].withValues(alpha: 0.3), // Theme color with low opacity
-                  const Color(0xFF0D1117), // Dark black-gray
-                  themeProvider.currentGradient.length > 1
-                      ? themeProvider.currentGradient[1].withValues(alpha: 0.2)
-                      : themeProvider.currentGradient[0].withValues(alpha: 0.2),
-                  const Color(0xFF000000), // Pure black at bottom
-                ],
-                stops: const [0.0, 0.3, 0.6, 0.8, 1.0],
-              ),
-            ),
-            child: Consumer<BookProviderFixed>(
+      body: ThemedBackground(
+        child: Consumer<BookProviderFixed>(
               builder: (context, bookProvider, child) {
                 if (bookProvider.isLoading) {
                   return Center(
@@ -288,8 +271,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-          );
-        },
       ),
       floatingActionButton: Consumer<BookProviderFixed>(
         builder: (context, bookProvider, child) {

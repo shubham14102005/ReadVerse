@@ -6,6 +6,7 @@ import '../providers/book_provider_fixed.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/profile_stats_card.dart';
+import '../widgets/themed_background.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -59,26 +60,8 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  const Color(0xFF000000), // Pure black at top
-                  themeProvider.currentGradient[0].withValues(alpha: 0.3), // Theme color with low opacity
-                  const Color(0xFF0D1117), // Dark black-gray
-                  themeProvider.currentGradient.length > 1
-                      ? themeProvider.currentGradient[1].withValues(alpha: 0.2)
-                      : themeProvider.currentGradient[0].withValues(alpha: 0.2),
-                  const Color(0xFF000000), // Pure black at bottom
-                ],
-                stops: const [0.0, 0.3, 0.6, 0.8, 1.0],
-              ),
-            ),
-            child: Consumer3<AuthProvider, BookProviderFixed, UserProfileProvider>(
+      body: ThemedBackground(
+        child: Consumer3<AuthProvider, BookProviderFixed, UserProfileProvider>(
               builder: (context, authProvider, bookProvider, userProfileProvider, child) {
                 if (authProvider.isLoading || userProfileProvider.isLoading) {
                   return const Center(child: CircularProgressIndicator());
@@ -103,8 +86,6 @@ class ProfileScreen extends StatelessWidget {
                 );
               },
             ),
-          );
-        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _editProfile(context),

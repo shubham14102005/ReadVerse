@@ -1,0 +1,39 @@
+<svg width="200" height="300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="romanceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F48FB1;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E91E63;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#AD1457;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="heartGlow" cx="50%" cy="50%" r="30%">
+      <stop offset="0%" style="stop-color:#FCE4EC;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#FCE4EC;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <rect width="200" height="300" rx="8" ry="8" fill="url(#romanceGradient)"/>
+  <circle cx="100" cy="150" r="60" fill="url(#heartGlow)"/>
+  
+  <!-- Heart shape -->
+  <path d="M100,120 C85,105 65,105 65,130 C65,155 100,180 100,180 C100,180 135,155 135,130 C135,105 115,105 100,120 Z" 
+        fill="#FCE4EC" opacity="0.9"/>
+  <path d="M100,125 C88,112 72,112 72,132 C72,152 100,172 100,172 C100,172 128,152 128,132 C128,112 112,112 100,125 Z" 
+        fill="#F8BBD9" opacity="0.7"/>
+  
+  <!-- Floating hearts -->
+  <path d="M50,80 C45,75 40,75 40,82 C40,89 50,95 50,95 C50,95 60,89 60,82 C60,75 55,75 50,80 Z" 
+        fill="#F8BBD9" opacity="0.6"/>
+  <path d="M160,220 C157,217 153,217 153,222 C153,227 160,231 160,231 C160,231 167,227 167,222 C167,217 163,217 160,220 Z" 
+        fill="#F8BBD9" opacity="0.6"/>
+  <path d="M170,100 C167,97 163,97 163,102 C163,107 170,111 170,111 C170,111 177,107 177,102 C177,97 173,97 170,100 Z" 
+        fill="#F8BBD9" opacity="0.4"/>
+  
+  <text x="100" y="45" font-family="serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#FCE4EC">HEARTS</text>
+  <text x="100" y="65" font-family="serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#FCE4EC">ACROSS TIME</text>
+  
+  <text x="100" y="250" font-family="serif" font-size="12" text-anchor="middle" fill="#FCE4EC">Victoria Summers</text>
+  
+  <!-- Decorative swirls -->
+  <path d="M30,200 Q40,195 35,205 Q45,200 40,210" stroke="#F8BBD9" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M170,50 Q180,45 175,55 Q185,50 180,60" stroke="#F8BBD9" stroke-width="2" fill="none" opacity="0.6"/>
+</svg>

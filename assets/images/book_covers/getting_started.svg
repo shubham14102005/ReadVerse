@@ -1,0 +1,42 @@
+<svg width="200" height="300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="guideGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#673AB7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bookSpine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4A148C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#673AB7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Book base -->
+  <rect width="200" height="300" rx="8" ry="8" fill="url(#guideGradient)"/>
+  
+  <!-- Book spine shadow -->
+  <rect x="0" y="0" width="15" height="300" rx="8" ry="8" fill="url(#bookSpine)" opacity="0.6"/>
+  
+  <!-- Decorative border -->
+  <rect x="10" y="10" width="180" height="280" rx="5" ry="5" fill="none" stroke="#E1BEE7" stroke-width="2" opacity="0.7"/>
+  
+  <!-- Book icon -->
+  <rect x="75" y="50" width="50" height="40" rx="3" fill="#E1BEE7" opacity="0.8"/>
+  <rect x="78" y="53" width="44" height="34" rx="2" fill="none" stroke="#673AB7" stroke-width="1"/>
+  <line x1="85" y1="60" x2="115" y2="60" stroke="#673AB7" stroke-width="1.5"/>
+  <line x1="85" y1="67" x2="110" y2="67" stroke="#673AB7" stroke-width="1"/>
+  <line x1="85" y1="74" x2="118" y2="74" stroke="#673AB7" stroke-width="1"/>
+  <line x1="85" y1="81" x2="108" y2="81" stroke="#673AB7" stroke-width="1"/>
+  
+  <!-- Title -->
+  <text x="100" y="130" font-family="serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Getting</text>
+  <text x="100" y="150" font-family="serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Started</text>
+  <text x="100" y="170" font-family="serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Guide</text>
+  
+  <!-- Author -->
+  <text x="100" y="210" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#E1BEE7">ReadVerse Team</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="50" cy="250" r="8" fill="#E1BEE7" opacity="0.4"/>
+  <circle cx="150" cy="250" r="8" fill="#E1BEE7" opacity="0.4"/>
+  <circle cx="100" cy="270" r="6" fill="#E1BEE7" opacity="0.5"/>
+</svg>

@@ -1,0 +1,44 @@
+<svg width="800" height="1200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="forestGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2E7D32;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#1B5E20;stop-opacity:0.6" />
+    </linearGradient>
+    <pattern id="leafPattern" patternUnits="userSpaceOnUse" width="80" height="80">
+      <ellipse cx="20" cy="30" rx="8" ry="15" fill="#81C784" opacity="0.3" transform="rotate(15 20 30)"/>
+      <ellipse cx="60" cy="50" rx="10" ry="12" fill="#66BB6A" opacity="0.2" transform="rotate(-20 60 50)"/>
+      <ellipse cx="40" cy="70" rx="7" ry="14" fill="#4CAF50" opacity="0.25" transform="rotate(45 40 70)"/>
+    </pattern>
+    <radialGradient id="sunbeamGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#C8E6C9;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#4CAF50;stop-opacity:0.1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Base forest gradient -->
+  <rect width="800" height="1200" fill="url(#forestGradient)"/>
+  
+  <!-- Leaf pattern overlay -->
+  <rect width="800" height="1200" fill="url(#leafPattern)" opacity="0.4"/>
+  
+  <!-- Sunbeam effects -->
+  <ellipse cx="200" cy="100" rx="40" ry="100" fill="url(#sunbeamGradient)" opacity="0.5" transform="rotate(15 200 100)"/>
+  <ellipse cx="500" cy="200" rx="35" ry="120" fill="url(#sunbeamGradient)" opacity="0.4" transform="rotate(-10 500 200)"/>
+  <ellipse cx="150" cy="400" rx="45" ry="90" fill="url(#sunbeamGradient)" opacity="0.6" transform="rotate(25 150 400)"/>
+  <ellipse cx="650" cy="500" rx="50" ry="110" fill="url(#sunbeamGradient)" opacity="0.3" transform="rotate(-15 650 500)"/>
+  <ellipse cx="300" cy="700" rx="40" ry="85" fill="url(#sunbeamGradient)" opacity="0.5" transform="rotate(20 300 700)"/>
+  <ellipse cx="600" cy="900" rx="38" ry="95" fill="url(#sunbeamGradient)" opacity="0.4" transform="rotate(-25 600 900)"/>
+  
+  <!-- Tree silhouettes -->
+  <path d="M50,1000 L50,800 Q60,780 80,790 Q100,800 120,785 Q140,790 150,800 L150,1000 Z" fill="#1B5E20" opacity="0.4"/>
+  <path d="M650,1200 L650,900 Q670,880 700,890 Q730,900 750,885 Q770,890 780,900 L780,1200 Z" fill="#2E7D32" opacity="0.3"/>
+  <path d="M300,1100 L300,850 Q320,830 350,840 Q380,850 400,835 L400,1100 Z" fill="#1B5E20" opacity="0.35"/>
+  
+  <!-- Floating leaves -->
+  <ellipse cx="120" cy="300" rx="5" ry="8" fill="#81C784" opacity="0.6" transform="rotate(30 120 300)"/>
+  <ellipse cx="400" cy="250" rx="4" ry="7" fill="#66BB6A" opacity="0.5" transform="rotate(-45 400 250)"/>
+  <ellipse cx="600" cy="350" rx="6" ry="9" fill="#4CAF50" opacity="0.7" transform="rotate(60 600 350)"/>
+  <ellipse cx="200" cy="600" rx="5" ry="8" fill="#81C784" opacity="0.4" transform="rotate(-30 200 600)"/>
+  <ellipse cx="550" cy="750" rx="4" ry="6" fill="#66BB6A" opacity="0.6" transform="rotate(15 550 750)"/>
+</svg>

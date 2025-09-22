@@ -1,0 +1,88 @@
+<svg width="800" height="1200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="auroraGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9C27B0;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#673AB7;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3F51B5;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="auroraWave1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00E5FF;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#1DE9B6;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#69F0AE;stop-opacity:0.4" />
+    </linearGradient>
+    <linearGradient id="auroraWave2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E040FB;stop-opacity:0.7" />
+      <stop offset="50%" style="stop-color:#7C4DFF;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#3F51B5;stop-opacity:0.3" />
+    </linearGradient>
+    <linearGradient id="auroraWave3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF1744;stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#FF6D00;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#FFD600;stop-opacity:0.2" />
+    </linearGradient>
+    <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E1BEE7;stop-opacity:0.3" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Base aurora gradient -->
+  <rect width="800" height="1200" fill="url(#auroraGradient)"/>
+  
+  <!-- Aurora waves/curtains -->
+  <path d="M0,200 Q100,150 200,200 T400,180 T600,220 T800,200 L800,350 Q700,300 600,350 T400,330 T200,370 T0,350 Z" 
+        fill="url(#auroraWave1)" opacity="0.6"/>
+  
+  <path d="M0,400 Q150,350 300,400 T600,380 T800,420 L800,550 Q650,500 500,550 T200,530 T0,570 Z" 
+        fill="url(#auroraWave2)" opacity="0.5"/>
+  
+  <path d="M0,600 Q200,550 400,600 T800,580 L800,750 Q600,700 400,750 T0,730 Z" 
+        fill="url(#auroraWave3)" opacity="0.4"/>
+  
+  <!-- Flowing aurora ribbons -->
+  <path d="M100,100 Q200,50 300,100 Q400,150 500,100 Q600,50 700,100" 
+        stroke="url(#auroraWave1)" stroke-width="3" fill="none" opacity="0.7"/>
+  <path d="M80,300 Q180,250 280,300 Q380,350 480,300 Q580,250 680,300" 
+        stroke="url(#auroraWave2)" stroke-width="4" fill="none" opacity="0.6"/>
+  <path d="M120,500 Q220,450 320,500 Q420,550 520,500 Q620,450 720,500" 
+        stroke="url(#auroraWave3)" stroke-width="3" fill="none" opacity="0.5"/>
+  <path d="M50,700 Q150,650 250,700 Q350,750 450,700 Q550,650 650,700" 
+        stroke="url(#auroraWave1)" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M150,800 Q250,750 350,800 Q450,850 550,800 Q650,750 750,800" 
+        stroke="url(#auroraWave2)" stroke-width="3" fill="none" opacity="0.5"/>
+  
+  <!-- Shimmering stars -->
+  <circle cx="150" cy="80" r="2" fill="url(#starGlow)" opacity="0.9"/>
+  <circle cx="300" cy="120" r="1.5" fill="url(#starGlow)" opacity="0.8"/>
+  <circle cx="500" cy="90" r="2.5" fill="url(#starGlow)" opacity="0.9"/>
+  <circle cx="650" cy="150" r="1" fill="url(#starGlow)" opacity="0.7"/>
+  <circle cx="750" cy="100" r="2" fill="url(#starGlow)" opacity="0.8"/>
+  <circle cx="80" cy="250" r="1.5" fill="url(#starGlow)" opacity="0.7"/>
+  <circle cx="400" cy="280" r="2" fill="url(#starGlow)" opacity="0.8"/>
+  <circle cx="600" cy="250" r="1" fill="url(#starGlow)" opacity="0.6"/>
+  <circle cx="200" cy="450" r="2" fill="url(#starGlow)" opacity="0.9"/>
+  <circle cx="550" cy="480" r="1.5" fill="url(#starGlow)" opacity="0.7"/>
+  <circle cx="700" cy="430" r="2.5" fill="url(#starGlow)" opacity="0.8"/>
+  <circle cx="100" cy="650" r="1.5" fill="url(#starGlow)" opacity="0.8"/>
+  <circle cx="350" cy="680" r="2" fill="url(#starGlow)" opacity="0.9"/>
+  <circle cx="600" cy="620" r="1" fill="url(#starGlow)" opacity="0.6"/>
+  <circle cx="250" cy="850" r="2" fill="url(#starGlow)" opacity="0.8"/>
+  <circle cx="500" cy="880" r="1.5" fill="url(#starGlow)" opacity="0.7"/>
+  <circle cx="750" cy="820" r="2.5" fill="url(#starGradient)" opacity="0.9"/>
+  
+  <!-- Twinkling crosses for bright stars -->
+  <path d="M148,80 L152,80 M150,78 L150,82" stroke="#FFFFFF" stroke-width="0.5" opacity="0.9"/>
+  <path d="M498,90 L502,90 M500,88 L500,92" stroke="#FFFFFF" stroke-width="0.5" opacity="0.9"/>
+  <path d="M198,450 L202,450 M200,448 L200,452" stroke="#FFFFFF" stroke-width="0.5" opacity="0.9"/>
+  <path d="M348,680 L352,680 M350,678 L350,682" stroke="#FFFFFF" stroke-width="0.5" opacity="0.9"/>
+  
+  <!-- Particle effects -->
+  <circle cx="200" cy="300" r="1" fill="#00E5FF" opacity="0.6"/>
+  <circle cx="400" cy="350" r="0.5" fill="#1DE9B6" opacity="0.7"/>
+  <circle cx="300" cy="550" r="1" fill="#E040FB" opacity="0.5"/>
+  <circle cx="600" cy="600" r="0.5" fill="#7C4DFF" opacity="0.6"/>
+  <circle cx="150" cy="750" r="1" fill="#FF1744" opacity="0.4"/>
+  <circle cx="450" cy="800" r="0.5" fill="#FFD600" opacity="0.5"/>
+  <circle cx="650" cy="900" r="1" fill="#69F0AE" opacity="0.6"/>
+  <circle cx="250" cy="950" r="0.5" fill="#00E5FF" opacity="0.7"/>
+</svg>

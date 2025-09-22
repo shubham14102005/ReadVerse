@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
+import 'book_cover_widget.dart';
 
 class BookGridTile extends StatelessWidget {
   final Book book;
@@ -31,24 +32,17 @@ class BookGridTile extends StatelessWidget {
             // Book Cover
             Expanded(
               flex: 3,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(12),
-                  ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
                 ),
                 child: Stack(
                   children: [
-                    Center(
-                      child: Icon(
-                        book.fileType == 'pdf'
-                            ? Icons.picture_as_pdf
-                            : Icons.book,
-                        color: Theme.of(context).primaryColor,
-                        size: 40,
-                      ),
+                    BookCoverWidget(
+                      book: book,
+                      width: double.infinity,
+                      height: double.infinity,
+                      showShadow: false,
                     ),
                     // Progress indicator
                     if (book.progress > 0)

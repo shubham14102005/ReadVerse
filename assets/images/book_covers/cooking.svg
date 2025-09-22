@@ -1,0 +1,36 @@
+<svg width="200" height="300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cookingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6F00;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FF8F00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFA000;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Book base -->
+  <rect width="200" height="300" rx="8" ry="8" fill="url(#cookingGradient)"/>
+  
+  <!-- Chef hat -->
+  <ellipse cx="100" cy="90" rx="35" ry="25" fill="#FFFFFF" opacity="0.9"/>
+  <rect x="85" y="65" width="30" height="25" rx="15" fill="#FFFFFF" opacity="0.9"/>
+  
+  <!-- Cooking utensils -->
+  <rect x="70" y="140" width="3" height="40" fill="#FFF3E0"/>
+  <circle cx="71.5" cy="135" r="8" fill="#FFF3E0" opacity="0.8"/>
+  
+  <rect x="90" y="150" width="2" height="30" fill="#FFF3E0"/>
+  <rect x="88" y="147" width="6" height="6" rx="1" fill="#FFF3E0"/>
+  
+  <rect x="110" y="145" width="3" height="35" fill="#FFF3E0"/>
+  <ellipse cx="111.5" cy="140" rx="6" ry="3" fill="#FFF3E0"/>
+  
+  <rect x="130" y="142" width="3" height="38" fill="#FFF3E0"/>
+  <rect x="128" y="138" width="7" height="8" rx="2" fill="#FFF3E0"/>
+  
+  <!-- Title -->
+  <text x="100" y="220" font-family="serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FFFFFF">CULINARY</text>
+  <text x="100" y="245" font-family="serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FFFFFF">EXCELLENCE</text>
+  
+  <!-- Author -->
+  <text x="100" y="275" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#FFF3E0">Chef Isabella Romano</text>
+</svg>

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/book_provider_fixed.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/book_grid_tile.dart';
+import '../widgets/themed_background.dart';
 import 'reader_screen.dart';
 
 class FavoriteScreen extends StatelessWidget {
@@ -44,26 +45,8 @@ class FavoriteScreen extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  const Color(0xFF000000), // Pure black at top
-                  themeProvider.currentGradient[0].withValues(alpha: 0.3), // Theme color with low opacity
-                  const Color(0xFF0D1117), // Dark black-gray
-                  themeProvider.currentGradient.length > 1
-                      ? themeProvider.currentGradient[1].withValues(alpha: 0.2)
-                      : themeProvider.currentGradient[0].withValues(alpha: 0.2),
-                  const Color(0xFF000000), // Pure black at bottom
-                ],
-                stops: const [0.0, 0.3, 0.6, 0.8, 1.0],
-              ),
-            ),
-            child: Consumer<BookProviderFixed>(
+      body: ThemedBackground(
+        child: Consumer<BookProviderFixed>(
               builder: (context, bookProvider, child) {
                 final favoriteBooks = bookProvider.favoriteBooks;
 
@@ -96,8 +79,6 @@ class FavoriteScreen extends StatelessWidget {
                 );
               },
             ),
-          );
-        },
       ),
     );
   }

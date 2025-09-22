@@ -1,0 +1,40 @@
+<svg width="200" height="300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="adventureGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D32F2F;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#F57C00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF9800;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="mountainGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#5D4037;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8D6E63;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Book base -->
+  <rect width="200" height="300" rx="8" ry="8" fill="url(#adventureGradient)"/>
+  
+  <!-- Mountain silhouettes -->
+  <path d="M0,200 L40,150 L80,170 L120,130 L160,160 L200,140 L200,300 L0,300 Z" fill="url(#mountainGradient)" opacity="0.7"/>
+  <path d="M0,220 L30,180 L70,200 L110,160 L150,190 L200,170 L200,300 L0,300 Z" fill="#4A148C" opacity="0.5"/>
+  
+  <!-- Sun -->
+  <circle cx="150" cy="80" r="25" fill="#FFF3E0" opacity="0.9"/>
+  <circle cx="150" cy="80" r="30" fill="#FFE0B2" opacity="0.4"/>
+  
+  <!-- Title -->
+  <text x="100" y="40" font-family="serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FFFFFF" stroke="#8D6E63" stroke-width="0.5">THE GREAT</text>
+  <text x="100" y="62" font-family="serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FFFFFF" stroke="#8D6E63" stroke-width="0.5">ADVENTURE</text>
+  
+  <!-- Author -->
+  <text x="100" y="250" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#FFF3E0">Alexander Sterling</text>
+  
+  <!-- Adventure symbols -->
+  <path d="M60,120 L70,100 L80,120 L75,125 L65,125 Z" fill="#FFF3E0" opacity="0.8"/>
+  <circle cx="72" cy="115" r="3" fill="#D32F2F"/>
+  
+  <!-- Compass -->
+  <circle cx="140" cy="120" r="12" fill="#FFF3E0" opacity="0.8"/>
+  <circle cx="140" cy="120" r="8" fill="#D32F2F" opacity="0.7"/>
+  <path d="M140,114 L144,120 L140,126 L136,120 Z" fill="#FFF3E0"/>
+</svg>

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
+import 'book_cover_widget.dart';
 
 class BookListTile extends StatelessWidget {
   final Book book;
@@ -50,95 +51,49 @@ class BookListTile extends StatelessWidget {
   }
 
   Widget _buildBookCover(BuildContext context) {
-    return Container(
-      width: 60,
-      height: 80,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
-            blurRadius: 4,
-            offset: const Offset(2, 2),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // Book Cover Image or Gradient Background
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: book.coverImagePath != null && book.coverImagePath!.isNotEmpty
-                ? Image.asset(
-                    book.coverImagePath!,
-                    width: 60,
-                    height: 80,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return _buildFallbackCover(context);
-                    },
-                  )
-                : _buildFallbackCover(context),
-          ),
-          // Progress indicator at bottom
-          if (book.progress > 0)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 3,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.3),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8),
-                  ),
+    return Stack(
+      children: [
+        // Use the new BookCoverWidget that supports SVG
+        BookCoverWidget(
+          book: book,
+          width: 60,
+          height: 80,
+          showShadow: true,
+        ),
+        // Progress indicator at bottom
+        if (book.progress > 0)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 3,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.3),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
                 ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: book.progress,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(8),
-                        bottomRight: Radius.circular(8),
-                      ),
+              ),
+              child: FractionallySizedBox(
+                alignment: Alignment.centerLeft,
+                widthFactor: book.progress,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
                     ),
                   ),
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 
-  Widget _buildFallbackCover(BuildContext context) {
-    return Container(
-      width: 60,
-      height: 80,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withValues(alpha: 0.7),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: Icon(
-          book.fileType == 'pdf' ? Icons.picture_as_pdf : Icons.menu_book,
-          color: Colors.white,
-          size: 24,
-        ),
-      ),
-    );
-  }
 
   Widget _buildBookInfo(BuildContext context) {
     return Column(

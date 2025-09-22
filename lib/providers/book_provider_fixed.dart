@@ -111,6 +111,7 @@ class BookProviderFixed with ChangeNotifier {
           totalPages: bookData['totalPages'],
           dateAdded: DateTime.now(),
           isAssetBook: true,
+          coverImagePath: bookData['coverImage'], // Add cover image path
         );
       }).toList();
 

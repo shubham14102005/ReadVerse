@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
+import '../utils/background_utils.dart';
 
 class ThemedBackground extends StatelessWidget {
   final Widget child;
@@ -11,66 +12,31 @@ class ThemedBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, _) {
-        // If background image is set, use it with overlay
-        if (themeProvider.backgroundImage.isNotEmpty) {
+        // Use the new background utility for rich themed backgrounds
+        if (themeProvider.isDarkMode) {
+          // For dark mode, use a subtle gradient
+          final gradient = themeProvider.currentGradient;
           return Container(
             decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(themeProvider.backgroundImage),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(themeProvider.isDarkMode ? 0.7 : 0.3),
-                  BlendMode.darken,
-                ),
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF121212),
+                  const Color(0xFF1E1E1E),
+                  gradient[0].withOpacity(0.1),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    themeProvider.currentGradient[0].withOpacity(0.1),
-                    themeProvider.currentGradient[1].withOpacity(0.05),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: child,
-            ),
+            child: child,
+          );
+        } else {
+          // For light mode, use the rich themed backgrounds
+          return BackgroundUtils.createBackgroundForTheme(
+            themeProvider.selectedTheme,
+            child: child,
           );
         }
-        
-        // If no background image, use gradient or solid color
-        final gradient = themeProvider.currentGradient;
-        return Container(
-          decoration: BoxDecoration(
-            gradient: themeProvider.isDarkMode
-                ? LinearGradient(
-                    colors: [
-                      const Color(0xFF121212),
-                      const Color(0xFF1E1E1E),
-                      gradient[0].withOpacity(0.1),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
-                : LinearGradient(
-                    colors: gradient.length >= 3
-                        ? [
-                            gradient[0].withOpacity(0.05),
-                            gradient[1].withOpacity(0.03),
-                            gradient[2].withOpacity(0.01),
-                          ]
-                        : [
-                            gradient[0].withOpacity(0.05),
-                            gradient[1].withOpacity(0.02),
-                          ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-          ),
-          child: child,
-        );
       },
     );
   }

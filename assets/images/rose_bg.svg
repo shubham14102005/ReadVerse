@@ -1,0 +1,68 @@
+<svg width="800" height="1200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="roseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E91E63;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#C2185B;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#880E4F;stop-opacity:0.6" />
+    </linearGradient>
+    <radialGradient id="petalGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FCE4EC;stop-opacity:0.8" />
+      <stop offset="70%" style="stop-color:#F8BBD9;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#E91E63;stop-opacity:0.2" />
+    </radialGradient>
+    <pattern id="rosePattern" patternUnits="userSpaceOnUse" width="120" height="120">
+      <circle cx="60" cy="30" r="8" fill="#F48FB1" opacity="0.3"/>
+      <ellipse cx="30" cy="60" rx="12" ry="8" fill="#F06292" opacity="0.25" transform="rotate(45 30 60)"/>
+      <circle cx="90" cy="90" r="6" fill="#EC407A" opacity="0.35"/>
+    </pattern>
+  </defs>
+  
+  <!-- Base rose gradient -->
+  <rect width="800" height="1200" fill="url(#roseGradient)"/>
+  
+  <!-- Rose pattern overlay -->
+  <rect width="800" height="1200" fill="url(#rosePattern)" opacity="0.4"/>
+  
+  <!-- Large decorative rose petals -->
+  <ellipse cx="200" cy="150" rx="60" ry="30" fill="url(#petalGradient)" opacity="0.6" transform="rotate(15 200 150)"/>
+  <ellipse cx="180" cy="170" rx="50" ry="25" fill="url(#petalGradient)" opacity="0.5" transform="rotate(-30 180 170)"/>
+  <ellipse cx="220" cy="180" rx="45" ry="22" fill="url(#petalGradient)" opacity="0.7" transform="rotate(60 220 180)"/>
+  
+  <ellipse cx="600" cy="300" rx="70" ry="35" fill="url(#petalGradient)" opacity="0.5" transform="rotate(-20 600 300)"/>
+  <ellipse cx="580" cy="320" rx="55" ry="28" fill="url(#petalGradient)" opacity="0.6" transform="rotate(45 580 320)"/>
+  <ellipse cx="620" cy="330" rx="48" ry="24" fill="url(#petalGradient)" opacity="0.4" transform="rotate(-75 620 330)"/>
+  
+  <ellipse cx="150" cy="600" rx="65" ry="32" fill="url(#petalGradient)" opacity="0.6" transform="rotate(30 150 600)"/>
+  <ellipse cx="170" cy="620" rx="52" ry="26" fill="url(#petalGradient)" opacity="0.5" transform="rotate(-45 170 620)"/>
+  <ellipse cx="130" cy="630" rx="45" ry="23" fill="url(#petalGradient)" opacity="0.7" transform="rotate(75 130 630)"/>
+  
+  <ellipse cx="650" cy="800" rx="60" ry="30" fill="url(#petalGradient)" opacity="0.5" transform="rotate(-15 650 800)"/>
+  <ellipse cx="630" cy="820" rx="50" ry="25" fill="url(#petalGradient)" opacity="0.6" transform="rotate(30 630 820)"/>
+  <ellipse cx="670" cy="830" rx="42" ry="21" fill="url(#petalGradient)" opacity="0.4" transform="rotate(-60 670 830)"/>
+  
+  <!-- Floating rose petals -->
+  <ellipse cx="300" cy="250" rx="15" ry="8" fill="#F8BBD9" opacity="0.7" transform="rotate(20 300 250)"/>
+  <ellipse cx="500" cy="200" rx="12" ry="6" fill="#F48FB1" opacity="0.6" transform="rotate(-35 500 200)"/>
+  <ellipse cx="400" cy="400" rx="18" ry="9" fill="#F06292" opacity="0.8" transform="rotate(50 400 400)"/>
+  <ellipse cx="250" cy="450" rx="14" ry="7" fill="#EC407A" opacity="0.5" transform="rotate(-25 250 450)"/>
+  <ellipse cx="550" cy="500" rx="16" ry="8" fill="#F8BBD9" opacity="0.7" transform="rotate(40 550 500)"/>
+  <ellipse cx="100" cy="750" rx="13" ry="6" fill="#F48FB1" opacity="0.6" transform="rotate(-50 100 750)"/>
+  <ellipse cx="700" cy="700" rx="15" ry="8" fill="#F06292" opacity="0.8" transform="rotate(25 700 700)"/>
+  <ellipse cx="350" cy="900" rx="17" ry="9" fill="#EC407A" opacity="0.5" transform="rotate(-40 350 900)"/>
+  <ellipse cx="600" cy="950" rx="14" ry="7" fill="#F8BBD9" opacity="0.7" transform="rotate(35 600 950)"/>
+  
+  <!-- Subtle sparkle effects -->
+  <circle cx="250" cy="100" r="2" fill="#FCE4EC" opacity="0.8"/>
+  <circle cx="450" cy="150" r="1.5" fill="#FCE4EC" opacity="0.7"/>
+  <circle cx="350" cy="350" r="2.5" fill="#FCE4EC" opacity="0.9"/>
+  <circle cx="650" cy="450" r="1.5" fill="#FCE4EC" opacity="0.6"/>
+  <circle cx="150" cy="500" r="2" fill="#FCE4EC" opacity="0.8"/>
+  <circle cx="500" cy="650" r="1.5" fill="#FCE4EC" opacity="0.7"/>
+  <circle cx="400" cy="750" r="2" fill="#FCE4EC" opacity="0.8"/>
+  <circle cx="200" cy="850" r="1.5" fill="#FCE4EC" opacity="0.6"/>
+  
+  <!-- Decorative swirls -->
+  <path d="M100,300 Q150,250 200,300 Q250,350 300,300" stroke="#F8BBD9" stroke-width="2" fill="none" opacity="0.4"/>
+  <path d="M500,550 Q550,500 600,550 Q650,600 700,550" stroke="#F48FB1" stroke-width="2" fill="none" opacity="0.3"/>
+  <path d="M150,900 Q200,850 250,900 Q300,950 350,900" stroke="#F06292" stroke-width="2" fill="none" opacity="0.4"/>
+</svg>

@@ -1,0 +1,35 @@
+<svg width="800" height="1200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="classicGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#673AB7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#9C27B0;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3F51B5;stop-opacity:0.6" />
+    </linearGradient>
+    <pattern id="bookPattern" patternUnits="userSpaceOnUse" width="100" height="100">
+      <rect width="100" height="100" fill="url(#classicGradient)" opacity="0.1"/>
+      <path d="M20,20 L80,20 L80,80 L20,80 Z" stroke="#673AB7" stroke-width="1" fill="none" opacity="0.2"/>
+      <path d="M25,30 L75,30 M25,40 L70,40 M25,50 L75,50 M25,60 L65,60" stroke="#9C27B0" stroke-width="0.5" opacity="0.3"/>
+    </pattern>
+    <radialGradient id="ornamentGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#E1BEE7;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#673AB7;stop-opacity:0.1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Base gradient background -->
+  <rect width="800" height="1200" fill="url(#classicGradient)"/>
+  
+  <!-- Subtle pattern overlay -->
+  <rect width="800" height="1200" fill="url(#bookPattern)" opacity="0.3"/>
+  
+  <!-- Elegant ornamental elements -->
+  <circle cx="150" cy="200" r="60" fill="url(#ornamentGradient)" opacity="0.4"/>
+  <circle cx="650" cy="400" r="80" fill="url(#ornamentGradient)" opacity="0.3"/>
+  <circle cx="200" cy="800" r="70" fill="url(#ornamentGradient)" opacity="0.4"/>
+  <circle cx="600" cy="1000" r="90" fill="url(#ornamentGradient)" opacity="0.2"/>
+  
+  <!-- Decorative flourishes -->
+  <path d="M50,100 Q150,50 250,100 Q350,150 450,100" stroke="#E1BEE7" stroke-width="2" fill="none" opacity="0.3"/>
+  <path d="M350,300 Q450,250 550,300 Q650,350 750,300" stroke="#E1BEE7" stroke-width="2" fill="none" opacity="0.2"/>
+  <path d="M100,600 Q200,550 300,600 Q400,650 500,600" stroke="#E1BEE7" stroke-width="2" fill="none" opacity="0.3"/>
+</svg>
