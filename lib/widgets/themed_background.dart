@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import '../utils/background_utils.dart';
+import 'animated_background.dart';
 
 class ThemedBackground extends StatelessWidget {
   final Widget child;
@@ -12,31 +13,12 @@ class ThemedBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, _) {
-        // Use the new background utility for rich themed backgrounds
-        if (themeProvider.isDarkMode) {
-          // For dark mode, use a subtle gradient
-          final gradient = themeProvider.currentGradient;
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFF121212),
-                  const Color(0xFF1E1E1E),
-                  gradient[0].withOpacity(0.1),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: child,
-          );
-        } else {
-          // For light mode, use the rich themed backgrounds
-          return BackgroundUtils.createBackgroundForTheme(
-            themeProvider.selectedTheme,
-            child: child,
-          );
-        }
+        // Use the enhanced animated background system
+        return AnimatedBackground(
+          themeName: themeProvider.selectedTheme,
+          gradient: themeProvider.currentGradient,
+          child: child,
+        );
       },
     );
   }
