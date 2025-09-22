@@ -11,44 +11,114 @@
       "category": "Guide"
     },
     {
-      "id": "dummy_1",
+      "id": "adventure_1",
       "title": "The Great Adventure",
-      "author": "John Smith",
+      "author": "Alexander Sterling",
       "fileName": "dummy_book_1.txt",
       "fileType": "txt",
-      "totalPages": 250,
-      "description": "An exciting adventure story",
+      "totalPages": 285,
+      "description": "Join Marcus on an epic journey through uncharted territories filled with mystery, danger, and unexpected friendships.",
       "category": "Adventure"
     },
     {
-      "id": "dummy_2",
-      "title": "Science Explained",
-      "author": "Dr. Jane Doe",
+      "id": "science_1",
+      "title": "Quantum Mysteries Unveiled",
+      "author": "Dr. Elena Rodriguez",
       "fileName": "dummy_book_2.txt",
       "fileType": "txt",
-      "totalPages": 180,
-      "description": "Understanding modern science",
+      "totalPages": 220,
+      "description": "Explore the fascinating world of quantum physics and discover how it shapes our understanding of reality.",
       "category": "Science"
     },
     {
-      "id": "dummy_3",
-      "title": "Cooking Mastery",
-      "author": "Chef Mike",
+      "id": "cooking_1",
+      "title": "Culinary Excellence",
+      "author": "Chef Isabella Romano",
       "fileName": "dummy_book_3.txt",
       "fileType": "txt",
-      "totalPages": 320,
-      "description": "Master the art of cooking",
+      "totalPages": 340,
+      "description": "Master the art of fine dining with traditional recipes and modern techniques from around the world.",
       "category": "Cooking"
     },
     {
-      "id": "dummy_4",
-      "title": "History Chronicles",
-      "author": "Prof. Sarah Wilson",
+      "id": "history_1",
+      "title": "Empires and Legends",
+      "author": "Prof. David Thornfield",
       "fileName": "dummy_book_4.txt",
       "fileType": "txt",
-      "totalPages": 420,
-      "description": "Chronicles of world history",
+      "totalPages": 450,
+      "description": "Journey through the rise and fall of great civilizations and the legendary figures who shaped our world.",
       "category": "History"
+    },
+    {
+      "id": "programming_1",
+      "title": "Code Like a Pro",
+      "author": "Sarah Chen",
+      "fileName": "programming_guide.txt",
+      "fileType": "txt",
+      "totalPages": 380,
+      "description": "From beginner to expert: master programming concepts, best practices, and advanced techniques.",
+      "category": "Technology"
+    },
+    {
+      "id": "health_1",
+      "title": "Wellness Revolution",
+      "author": "Dr. Michael Thompson",
+      "fileName": "healthy_living.txt",
+      "fileType": "txt",
+      "totalPages": 290,
+      "description": "Transform your life with science-backed strategies for optimal health, nutrition, and mental well-being.",
+      "category": "Health"
+    },
+    {
+      "id": "photography_1",
+      "title": "Capturing Light",
+      "author": "Emma Blackwood",
+      "fileName": "photography_basics.txt",
+      "fileType": "txt",
+      "totalPages": 260,
+      "description": "Learn the art and science of photography, from composition basics to advanced lighting techniques.",
+      "category": "Arts"
+    },
+    {
+      "id": "mystery_1",
+      "title": "The Shadow Detective",
+      "author": "Robert Nightingale",
+      "fileName": "mystery_novel.txt",
+      "fileType": "txt",
+      "totalPages": 320,
+      "description": "Detective Catherine Moore faces her most challenging case yet in the fog-covered streets of Victorian London.",
+      "category": "Mystery"
+    },
+    {
+      "id": "romance_1",
+      "title": "Hearts Across Time",
+      "author": "Victoria Summers",
+      "fileName": "romance_novel.txt",
+      "fileType": "txt",
+      "totalPages": 280,
+      "description": "A timeless love story that spans generations, proving that true love knows no boundaries.",
+      "category": "Romance"
+    },
+    {
+      "id": "fantasy_1",
+      "title": "Realm of Dragons",
+      "author": "Marcus Dragonheart",
+      "fileName": "fantasy_epic.txt",
+      "fileType": "txt",
+      "totalPages": 420,
+      "description": "In a world where dragons soar and magic flows, young Aria must discover her true power to save her kingdom.",
+      "category": "Fantasy"
+    },
+    {
+      "id": "business_1",
+      "title": "Entrepreneurial Mindset",
+      "author": "James Harrison",
+      "fileName": "business_guide.txt",
+      "fileType": "txt",
+      "totalPages": 310,
+      "description": "Build successful businesses with proven strategies, innovative thinking, and leadership principles.",
+      "category": "Business"
     }
   ]
 }
