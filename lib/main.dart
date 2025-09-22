@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'providers/auth_provider.dart';
-import 'providers/book_provider.dart';
 import 'providers/book_provider_fixed.dart';
 import 'providers/navigation_provider.dart';
 import 'providers/theme_provider.dart';
@@ -39,13 +38,6 @@ class ReadVerseApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => BookProviderFixed()),
         ChangeNotifierProvider(create: (_) => UserProfileProvider()),
-        ChangeNotifierProxyProvider<UserProfileProvider, BookProvider>(
-          create: (_) => BookProvider(),
-          update: (_, userProfileProvider, bookProvider) {
-            bookProvider?.setUserProfileProvider(userProfileProvider);
-            return bookProvider ?? BookProvider()..setUserProfileProvider(userProfileProvider);
-          },
-        ),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
