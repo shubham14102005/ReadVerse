@@ -1,7 +1,6 @@
-# 📚 ReadVerse - Beautiful eBook Reader
+#  ReadVerse - Beautiful eBook Reader
 
 <div align="center">
-  <img src="assets/images/app_icon.png" alt="ReadVerse Logo" width="100" height="100">
   
   [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
   [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
@@ -9,30 +8,30 @@
   [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey.svg)](https://flutter.dev)
 </div>
 
-## 🌟 Overview
+##  Overview
 
 ReadVerse is a beautiful, feature-rich cross-platform eBook reader built with Flutter. Experience your digital library like never before with stunning themed backgrounds, gorgeous SVG book covers, and an intuitive reading interface that adapts to your preferences.
 
-## ✨ Key Features
+##  Key Features
 
-### 📖 Reading Experience
+###  Reading Experience
 - **Multi-format Support**: PDF, EPUB, and TXT files
 - **Beautiful Book Covers**: Custom SVG covers for every book genre
 - **Progress Tracking**: Never lose your place with automatic bookmarking
 - **Reading Analytics**: Track your reading time and progress
 
-### 🎨 Stunning Themes
+###  Stunning Themes
 Choose from 7 carefully crafted themes, each with unique animated backgrounds:
 
-- **🎭 Classic** - Elegant purple gradients with geometric patterns
-- **🌊 Ocean Breeze** - Serene blues with animated waves and bubbles  
-- **🌲 Forest Dream** - Natural greens with floating leaves and sunbeams
-- **🌅 Sunset Glow** - Warm oranges with dynamic sun rays and clouds
-- **🌙 Midnight Sky** - Deep blues with twinkling stars and constellations
-- **🌸 Rose Gold** - Elegant pinks with shimmering particles
-- **🌈 Aurora** - Mystical purples with flowing northern lights
+- **1. Classic** - Elegant purple gradients with geometric patterns
+- **2. Ocean Breeze** - Serene blues with animated waves and bubbles  
+- **3. Forest Dream** - Natural greens with floating leaves and sunbeams
+- **4. Sunset Glow** - Warm oranges with dynamic sun rays and clouds
+- **5. Midnight Sky** - Deep blues with twinkling stars and constellations
+- **6. Rose Gold** - Elegant pinks with shimmering particles
+- **7. Aurora** - Mystical purples with flowing northern lights
 
-### 🔥 Advanced Features
+###  Advanced Features
 - **Firebase Authentication**: Secure user accounts
 - **Cloud Sync**: Access your library across devices
 - **Smart Search**: Find books by title, author, or content
@@ -40,7 +39,7 @@ Choose from 7 carefully crafted themes, each with unique animated backgrounds:
 - **Reading Statistics**: Detailed insights into your reading habits
 - **Responsive Design**: Perfect on phones and tablets
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Framework**: Flutter 3.0+
 - **Language**: Dart
@@ -51,7 +50,7 @@ Choose from 7 carefully crafted themes, each with unique animated backgrounds:
 - **Authentication**: Firebase Auth
 - **Storage**: SharedPreferences, Cloud Firestore
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Flutter SDK (3.0 or higher)
@@ -101,7 +100,7 @@ assets/
 └── books/            # Sample books and manifest
 ```
 
-## 🎨 Custom Themes
+##  Custom Themes
 
 Each theme includes:
 - **Dynamic Gradients**: Smooth color transitions
@@ -109,7 +108,7 @@ Each theme includes:
 - **Interactive Effects**: Subtle parallax and breathing animations
 - **Consistent UI**: Colors and styling that match the theme
 
-## 📚 Book Management
+##  Book Management
 
 ### Supported Formats
 - **PDF**: Full reading support with zoom and navigation
@@ -123,7 +122,7 @@ Each book automatically gets a beautiful SVG cover based on:
 - Professional typography
 - Scalable vector graphics
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Please follow these steps:
 
@@ -133,15 +132,15 @@ We welcome contributions! Please follow these steps:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+##  Author
 
 **Shubham && Deep **
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Flutter team for the amazing framework
 - Firebase for backend services
@@ -151,6 +150,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <p>Made with ❤️ using Flutter</p>
-  <p>⭐ Star this repo if you found it helpful!</p>
+  <p>Made with  using Flutter</p>
+  <p> Star this repo if you found it helpful!</p>
 </div>
